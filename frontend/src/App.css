@@ -1,0 +1,294 @@
+:root {
+  --dark-bg: #050510;
+}
+
+body {
+  background-color: var(--dark-bg);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.app {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.cursor-light {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* Let clicks pass through */
+  z-index: 1;
+  /* Above background, below content */
+  /* Gradient is set via inline style in JS */
+}
+
+/* Hero Section */
+.hero-container {
+  position: relative;
+  /* Anchor for absolute text */
+  width: 100%;
+  height: 90vh;
+  /* Moved height here */
+  z-index: 2;
+  /* Sit ABOVE the cursor light (z-index: 1) */
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  /* Fill container */
+  object-fit: cover;
+  display: block;
+}
+
+.hero-text {
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  /* Middle Right */
+  transform: translateY(-50%);
+  color: white;
+  font-family: 'Outfit', sans-serif;
+  /* Consistent font */
+  font-size: 5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  max-width: 40%;
+  text-align: right;
+  line-height: 1.1;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+  /* Readability */
+  z-index: 5;
+}
+
+/* Navbar */
+/* Navbar */
+.navbar {
+  position: fixed;
+  /* Fixed to viewport */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5%;
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+.nav-brand {
+  font-family: sans-serif;
+  /* Using system font or define font in index.css */
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: #000000;
+  /* Explicit Black as requested */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: default;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  /* Reduced gap to bring bubbles closer like spotlight */
+}
+
+.nav-links a {
+  color: #000000;
+  text-decoration: none;
+  font-weight: 600;
+  text-transform: capitalize;
+  /* Spotlight is usually normal case, but keeping stylistic */
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+
+  /* Glass Bubble Styling */
+  background: rgba(255, 255, 255, 0.5);
+  /* Stronger semi-transparent bg for contrast */
+  backdrop-filter: blur(16px);
+  /* Enhanced frosted effect */
+  -webkit-backdrop-filter: blur(16px);
+  /* Safari support */
+  padding: 0.8rem 1.5rem;
+  /* Bubble padding */
+  border-radius: 50px;
+  /* Pill shape */
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  /* Clear border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  /* Enhanced shadow */
+
+  transition: all 0.3s ease;
+}
+
+.nav-links a span {
+  /* Removed mix-blend-mode to ensure text stays black */
+  display: inline-block;
+}
+
+.nav-links a:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.scroll-section {
+  min-height: 40vh;
+  /* Reduced from 100vh to bring closer */
+  display: flex;
+  flex-direction: column;
+  /* Stack Baja SAE and at Biola */
+  justify-content: center;
+  align-items: center;
+  background-color: var(--dark-bg);
+  /* Ensure match with body */
+  color: white;
+  padding-top: 2rem;
+  /* Small padding instead of massive centering */
+}
+
+.scroll-subtext {
+  font-size: 4.5rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Navbar Dark Mode (Scrolled Past Hero) */
+.navbar.dark-mode .nav-brand {
+  color: white;
+  /* Switch to white on dark background */
+}
+
+.scroll-float {
+  overflow: hidden;
+}
+
+.scroll-float-text {
+  display: inline-block;
+  font-size: clamp(1.6rem, 8vw, 10rem);
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.char {
+  display: inline-block;
+}
+
+.word {
+  display: inline-block;
+  white-space: nowrap;
+  /* Keep word chars together */
+}
+
+.animated-gradient-text {
+  position: relative;
+  margin: 0 auto;
+  display: flex;
+  max-width: fit-content;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.25rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  transition: box-shadow 0.5s ease-out;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.animated-gradient-text.with-border {
+  padding: 0.35rem 0.75rem;
+}
+
+.gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.gradient-overlay::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: inherit;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #060010;
+  z-index: -1;
+}
+
+.text-content {
+  display: inline-block;
+  position: relative;
+  z-index: 2;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Split Section */
+.split-section {
+  display: flex;
+  width: 100%;
+  min-height: 80vh;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--dark-bg);
+  padding: 4rem 5%;
+  /* Horizontal padding matching navbar */
+  box-sizing: border-box;
+}
+
+.split-text {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  /* Center text in its half */
+  align-items: center;
+}
+
+.split-text-content {
+  font-size: clamp(2rem, 5vw, 6rem);
+  /* Slightly smaller than main hero text */
+  text-align: left;
+  color: white;
+}
+
+.split-image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.split-image {
+  width: 90%;
+  height: auto;
+  border-radius: 20px;
+  object-fit: cover;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  /* Pop effect */
+}
