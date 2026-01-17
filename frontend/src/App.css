@@ -1,5 +1,8 @@
 :root {
   --dark-bg: #050510;
+  --card-bg: #0a0a16;
+  --biola-red: #ee0000;
+  --biola-orange: #ff8e71;
 }
 
 body {
@@ -210,10 +213,9 @@ body {
   display: inline-block;
 }
 
-/* --- LOGO SECTION (NEW) --- */
+/* --- LOGO SECTION --- */
 .logo-section {
   width: 100%;
-  /* Reduced bottom padding from 4rem to 1rem */
   padding: 2rem 0 1rem 0;
   display: flex;
   flex-direction: column;
@@ -238,7 +240,6 @@ body {
   width: 100%;
   position: relative;
   z-index: 2;
-  /* Increased negative margin slightly to pull it closer */
   margin-top: -8vh;
 }
 
@@ -340,7 +341,263 @@ body {
   display: block;
 }
 
-/* --- GRADIENT TEXT --- */
+/* --- TEAMS SECTION --- */
+.teams-section {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 4rem 10%;
+  box-sizing: border-box;
+  background-color: var(--dark-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.teams-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.teams-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: white;
+  margin: 0;
+}
+
+.teams-underline {
+  width: 60%;
+  height: 4px;
+  background: linear-gradient(90deg, #ee0000ff, #ff8e71ff);
+  margin: 0.5rem auto 0;
+  border-radius: 2px;
+}
+
+.teams-container-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  min-height: 600px;
+  position: relative;
+  margin: 0 auto;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Hide grid item visually if selected */
+.hidden-card {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.team-card {
+  position: relative;
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.team-card.compact {
+  aspect-ratio: 4/3;
+  transition: border-color 0.4s ease;
+}
+
+/* --- EXPANDED CARD STYLES --- */
+.team-card.expanded {
+  position: fixed;
+  /* INSET + MARGIN AUTO = Perfect Centering compatible with framer motion */
+  inset: 0;
+  margin: auto;
+
+  width: 90vw;
+  max-width: 1000px;
+
+  /* Adjusted Height - Shorter */
+  height: auto;
+  max-height: 60vh;
+  min-height: 400px;
+
+  cursor: default;
+  z-index: 1000;
+  border-color: transparent;
+  background:
+    linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+    linear-gradient(45deg, #ee0000ff, #ff8e71ff, #ff0f0f) border-box;
+  box-shadow: 0 15px 50px rgba(238, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 3rem;
+
+  overflow-y: auto;
+}
+
+/* CLICK OUTSIDE OVERLAY */
+.overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  z-index: 900;
+  cursor: pointer;
+}
+
+/* CLOSE BUTTON */
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.close-button:hover {
+  background: #ff0f0f;
+  border-color: #ff0f0f;
+  transform: rotate(90deg);
+}
+
+.team-card-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(238, 0, 0, 0.4), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.team-card.expanded .team-card-glow {
+  opacity: 0.5;
+}
+
+.team-card.compact:hover .team-card-glow {
+  opacity: 1;
+}
+
+.team-card-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.expanded-content {
+  justify-content: center;
+  padding-top: 0;
+  flex-direction: row;
+  align-items: center;
+  gap: 3rem;
+  height: 100%;
+}
+
+.team-logo-placeholder {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-logo-placeholder.expanded-logo {
+  width: 140px;
+  height: 140px;
+  flex-shrink: 0;
+}
+
+.logo-circle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.logo-circle::after {
+  content: 'LOGO';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+}
+
+.team-name {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.expanded-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-align: left;
+  background: linear-gradient(90deg, #ee0000ff, #ff8e71ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  max-width: 550px;
+}
+
+.team-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+}
+
+/* GRADIENT TEXT */
 .animated-gradient-text {
   position: relative;
   display: flex;
@@ -393,8 +650,7 @@ body {
   color: transparent;
 }
 
-
-/* --- LOGO LOOP STYLES --- */
+/* LOGO LOOP */
 .logoloop {
   position: relative;
   --logoloop-gap: 32px;
@@ -625,5 +881,31 @@ body {
 
   .engineering-gradient-header {
     font-size: 2.5rem;
+  }
+
+  /* Teams Mobile Logic */
+  .teams-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .teams-section {
+    padding: 2rem 5%;
+  }
+
+  /* Expanded Mobile Styles */
+  .expanded-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .expanded-title {
+    text-align: center;
+  }
+
+  .text-container {
+    align-items: center;
+    text-align: center;
   }
 }
