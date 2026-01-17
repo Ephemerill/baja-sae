@@ -14,7 +14,7 @@ const NavLink = ({ href, children }) => {
       href={href}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      className="nav-link-item"
     >
       {isHovered ? (
         <GradientText
@@ -84,7 +84,6 @@ const teamsData = [
 const TeamSection = () => {
   const [selectedId, setSelectedId] = useState(null);
 
-  // --- 1. ESCAPE KEY LISTENER ---
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
@@ -95,7 +94,6 @@ const TeamSection = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // --- 2. SCROLL LOCK ---
   useEffect(() => {
     if (selectedId) {
       document.body.style.overflow = 'hidden';
@@ -105,16 +103,31 @@ const TeamSection = () => {
     return () => { document.body.style.overflow = ''; };
   }, [selectedId]);
 
+  const updateMousePosition = (e) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty('--x', `${x}px`);
+    card.style.setProperty('--y', `${y}px`);
+  };
+
+  const handleCardMouseEnter = (e) => {
+    updateMousePosition(e);
+  };
+
+  const handleCardMouseLeave = (e) => {
+    updateMousePosition(e);
+  };
+
   return (
-    <section className="teams-section">
+    <section className="teams-section" id="team">
       <div className="teams-header">
         <h2 className="teams-title">Our Teams</h2>
         <div className="teams-underline"></div>
       </div>
 
       <div className="teams-container-wrapper">
-
-        {/* GRID VIEW */}
         <motion.div
           className="teams-grid"
           animate={{ opacity: selectedId ? 0.3 : 1 }}
@@ -126,6 +139,8 @@ const TeamSection = () => {
               layoutId={`card-${team.id}`}
               className={`team-card compact ${selectedId === team.id ? 'hidden-card' : ''}`}
               onClick={() => setSelectedId(team.id)}
+              onMouseEnter={handleCardMouseEnter}
+              onMouseLeave={handleCardMouseLeave}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
@@ -136,10 +151,11 @@ const TeamSection = () => {
                 delay: index * 0.05
               }}
               whileHover={{ y: -5 }}
-              // Ensure pointer events are ALWAYS auto here so we can click them immediately
               style={{ pointerEvents: 'auto' }}
             >
-              <div className="team-card-glow"></div>
+              {/* Only the Ripple Border Mask remains */}
+              <div className="gradient-border-mask"></div>
+
               <div className="team-card-content">
                 <motion.div
                   className="team-logo-placeholder"
@@ -158,28 +174,23 @@ const TeamSection = () => {
           ))}
         </motion.div>
 
-        {/* EXPANDED VIEW + BACKDROP */}
         <AnimatePresence>
           {selectedId && (
             <>
-              {/* BACKDROP */}
               <motion.div
                 className="overlay-backdrop"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                // CRITICAL: pointerEvents: "none" in exit prop ensures instant click-through
                 exit={{ opacity: 0, pointerEvents: "none" }}
                 transition={{ duration: 0.2 }}
                 onClick={() => setSelectedId(null)}
               />
 
-              {/* EXPANDED CARD */}
               <motion.div
                 layoutId={`card-${selectedId}`}
                 key={`expanded-card-${selectedId}`}
                 className="team-card expanded"
                 transition={{ type: "spring", stiffness: 80, damping: 20 }}
-                // CRITICAL: Disable pointer events instantly when exit animation starts
                 exit={{ opacity: 0, scale: 0.95, pointerEvents: "none" }}
                 onClick={(e) => e.stopPropagation()}
               >
@@ -200,7 +211,7 @@ const TeamSection = () => {
                   </svg>
                 </motion.button>
 
-                <div className="team-card-glow"></div>
+                <div className="gradient-border-mask expanded-mask"></div>
 
                 <div className="team-card-content expanded-content">
                   <motion.div
@@ -247,12 +258,12 @@ const EngineeringSection = () => {
     offset: ["start start", "end end"]
   });
 
-  const scale = useTransform(scrollYProgress, [0.1, 0.4], [1, 0.65]);
+  const scale = useTransform(scrollYProgress, [0.1, 0.4], [1, 0.8]);
   const bodyOpacity = useTransform(scrollYProgress, [0.4, 0.6], [0, 1]);
   const bodyY = useTransform(scrollYProgress, [0.4, 0.6], [20, 0]);
 
   return (
-    <div ref={containerRef} className="engineering-track">
+    <div ref={containerRef} className="engineering-track" id="car">
       <div className="engineering-sticky-view">
         <div className="split-container">
           <div className="split-left">
@@ -302,7 +313,7 @@ function App() {
   useEffect(() => {
     const handleScroll = () => setScrolledPast(window.scrollY > window.innerHeight * 0.9);
     const handleMouseMove = (e) => {
-      if (cursorRef.current) {
+      if (cursorRef.current && window.matchMedia("(hover: hover)").matches) {
         cursorRef.current.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(42, 80, 229, 0.15), transparent 40%)`;
       }
     };
@@ -336,7 +347,7 @@ function App() {
         </div>
       </nav>
 
-      <div className="hero-container">
+      <div className="hero-container" id="about">
         <img src="/baja-web.jpg" alt="Biola Baja SAE" className="hero-image" />
         <h1 className="hero-text">Biola Faith Buzzwords</h1>
       </div>
@@ -384,7 +395,7 @@ function App() {
 
       <TeamSection />
 
-      <div style={{ height: '20vh' }}></div>
+      <div style={{ height: '20vh' }} id="contact"></div>
     </div>
   );
 }
