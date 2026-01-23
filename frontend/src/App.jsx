@@ -153,7 +153,6 @@ const TeamSection = () => {
               whileHover={{ y: -5 }}
               style={{ pointerEvents: 'auto' }}
             >
-              {/* Only the Ripple Border Mask remains */}
               <div className="gradient-border-mask"></div>
 
               <div className="team-card-content">
@@ -306,6 +305,99 @@ const EngineeringSection = () => {
   );
 };
 
+const SupportSection = () => {
+  return (
+    <section className="support-section" id="contact">
+      <div className="support-bg-glass"></div>
+      <div className="support-glow-blob"></div>
+
+      <motion.div
+        className="support-content"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        <GradientText
+          colors={["#ee0000ff", "#ff8e71ff", "#ffffff"]}
+          animationSpeed={6}
+          showBorder={false}
+          className="support-title"
+        >
+          FUEL OUR PASSION
+        </GradientText>
+
+        <p className="support-text">
+          Building a championship-winning vehicle takes more than just engineering—it takes a community. Your support provides the materials, tools, and travel logistics needed to cross the finish line.
+        </p>
+
+        <button className="donate-btn">
+          <div className="donate-btn-shine"></div>
+          Support the Team
+        </button>
+      </motion.div>
+    </section>
+  );
+};
+
+const Footer = () => {
+  return (
+    <footer className="footer">
+      <div className="footer-content">
+        <div className="footer-brand">
+          <h3>Biola Racing</h3>
+          <p className="footer-text">
+            Pushing the limits of engineering and endurance. Designed and built by students at Biola University.
+          </p>
+        </div>
+
+        <div className="footer-column">
+          <h4>Explore</h4>
+          <div className="footer-links">
+            <a href="#about" className="footer-link">About</a>
+            <a href="#team" className="footer-link">Team</a>
+            <a href="#car" className="footer-link">Car</a>
+            <a href="#contact" className="footer-link">Support</a>
+          </div>
+        </div>
+
+        <div className="footer-column">
+          <h4>Legal</h4>
+          <div className="footer-links">
+            <a href="#" className="footer-link">Privacy Policy</a>
+            <a href="#" className="footer-link">Terms of Service</a>
+            <a href="#" className="footer-link">Cookie Policy</a>
+          </div>
+        </div>
+
+        <div className="footer-column">
+          <h4>Contact</h4>
+          <div className="footer-links">
+            <a href="mailto:racing@biola.edu" className="footer-link">racing@biola.edu</a>
+            <span className="footer-text">13800 Biola Ave<br />La Mirada, CA 90639</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="footer-bottom">
+        <span className="copyright">© {new Date().getFullYear()} Biola Racing. All rights reserved.</span>
+        <div className="social-icons">
+          {/* Simple SVG Social Icons */}
+          <div className="social-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+          </div>
+          <div className="social-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+          </div>
+          <div className="social-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
 function App() {
   const [scrolledPast, setScrolledPast] = useState(false);
   const cursorRef = useRef(null);
@@ -395,7 +487,9 @@ function App() {
 
       <TeamSection />
 
-      <div style={{ height: '20vh' }} id="contact"></div>
+      <SupportSection />
+
+      <Footer />
     </div>
   );
 }
