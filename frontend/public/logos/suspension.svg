@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="-6.79 0 20 20">
+  <g id="suspension" transform="translate(-8.787 -2)">
+    <rect id="secondary" fill="#2ca9bc" width="2" height="2" transform="translate(11 3)"/>
+    <path id="primary" d="M12,21a2,2,0,1,1,2-2A2,2,0,0,1,12,21Zm0-4V5m1-2H11V5h2Zm-3,8.5,4-1m-4,4,4-1m-4-5,4-1" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+  </g>
+</svg>

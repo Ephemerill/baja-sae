@@ -46,36 +46,43 @@ const teamsData = [
     title: "Drivetrain",
     id: "drivetrain",
     icon: "⚙️",
+    // UPDATED: Now points to SVG files
+    logo: "/logos/drivetrain.svg",
     description: "The heartbeat of the car. Our drivetrain team engineers the continuously variable transmission (CVT) and gearbox to efficiently transfer power from the engine to the wheels. We focus on tuning for maximum torque and acceleration while maintaining reliability under extreme off-road shock loads."
   },
   {
     title: "Suspension",
     id: "suspension",
     icon: "amort",
+    logo: "/logos/suspension.svg",
     description: "Conquering the terrain. We design and validate custom double-wishbone front and trailing-arm rear suspension geometries. Using Adams Car simulation, we optimize camber curves and damping ratios to ensure our drivers can tackle 6-foot drops and rock gardens with confidence."
   },
   {
     title: "Brakes",
     id: "brakes",
     icon: "🛑",
+    logo: "/logos/brakes.svg",
     description: "Stopping power is safety. This team is responsible for the complete hydraulic braking system, ensuring we can lock all four wheels at any speed. We meticulously design custom calipers, rotors, and pedal assemblies to minimize weight while maximizing thermal efficiency."
   },
   {
     title: "Frame",
     id: "frame",
     icon: "🏗️",
+    logo: "/logos/frame.svg",
     description: "The backbone of safety. Our chassis team designs a lightweight 4130 chromoly steel spaceframe that exceeds strict SAE safety standards. Through rigorous FEA impact analysis, we ensure the driver is protected from rollovers and collisions while keeping the center of gravity low."
   },
   {
     title: "Interface",
     id: "interface",
     icon: "🖥️",
+    logo: "/logos/interface.svg",
     description: "Driver-machine connection. We focus on ergonomics and data acquisition. From steering wheel design to dashboard displays that relay real-time engine telemetry, we ensure the driver has total control and situational awareness during the endurance race."
   },
   {
     title: "Business",
     id: "business",
     icon: "💼",
+    logo: "/logos/business.svg",
     description: "Fueling the operation. Our business team manages the $50k+ annual budget, secures corporate sponsorships, and handles logistics. We treat the racing team as a startup, focusing on marketing, project management, and delivering ROI to our partners."
   },
 ];
@@ -153,8 +160,8 @@ const TeamSection = () => {
               viewport={{ once: true, margin: "-50px" }}
               transition={{
                 type: "spring",
-                stiffness: 80,
-                damping: 20,
+                stiffness: 300,
+                damping: 30,
                 delay: index * 0.05
               }}
               whileHover={{ y: -5 }}
@@ -167,7 +174,17 @@ const TeamSection = () => {
                   className="team-logo-placeholder"
                   layoutId={`logo-${team.id}`}
                 >
-                  <div className="logo-circle"></div>
+                  {team.logo ? (
+                    <motion.img
+                      src={team.logo}
+                      alt={team.title}
+                      className="team-logo-image"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    />
+                  ) : (
+                    <div className="logo-circle"></div>
+                  )}
                 </motion.div>
                 <motion.h3
                   className="team-name"
@@ -198,8 +215,8 @@ const TeamSection = () => {
                 className="team-card expanded"
                 transition={{
                   type: "spring",
-                  stiffness: isMobile ? 400 : 80,
-                  damping: isMobile ? 30 : 20
+                  stiffness: 300,
+                  damping: 30
                 }}
                 exit={{ opacity: 0, scale: 0.95, pointerEvents: "none" }}
                 onClick={(e) => e.stopPropagation()}
@@ -210,9 +227,11 @@ const TeamSection = () => {
                     e.stopPropagation();
                     setSelectedId(null);
                   }}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
                   exit={{ opacity: 0, scale: 0.5, pointerEvents: "none" }}
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
                   transition={{ delay: 0.1, duration: 0.2 }}
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -228,7 +247,15 @@ const TeamSection = () => {
                     className="team-logo-placeholder expanded-logo"
                     layoutId={`logo-${selectedId}`}
                   >
-                    <div className="logo-circle"></div>
+                    {teamsData.find(t => t.id === selectedId).logo ? (
+                      <motion.img
+                        src={teamsData.find(t => t.id === selectedId).logo}
+                        alt="logo"
+                        className="team-logo-image"
+                      />
+                    ) : (
+                      <div className="logo-circle"></div>
+                    )}
                   </motion.div>
 
                   <div className="text-container">

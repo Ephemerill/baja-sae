@@ -91,7 +91,22 @@ export default function GradientText({
             onMouseLeave={handleMouseLeave}
         >
             {showBorder && <motion.div className="gradient-overlay" style={{ ...gradientStyle, backgroundPosition }} />}
-            <motion.div className="text-content" style={{ ...gradientStyle, backgroundPosition }}>
+
+            {/* CRITICAL FIX: 
+               Added backgroundClip and TextFillColor directly here.
+               This forces the gradient to stay inside the text, even if parent styles set color to white.
+            */}
+            <motion.div
+                className="text-content"
+                style={{
+                    ...gradientStyle,
+                    backgroundPosition,
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    color: 'transparent'
+                }}
+            >
                 {children}
             </motion.div>
         </motion.div>
