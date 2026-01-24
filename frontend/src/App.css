@@ -6,7 +6,7 @@
   --biola-orange: #ff8e71;
 }
 
-/* Global Reset for box-sizing to prevent padding causing overflow */
+/* Global Reset */
 *,
 *::before,
 *::after {
@@ -15,6 +15,7 @@
 
 html {
   background-color: var(--footer-bg);
+  /* REMOVED overscroll-behavior: none; - This caused the scrolling bug */
   overflow-x: hidden;
 }
 
@@ -24,7 +25,6 @@ body {
   padding: 0;
   overflow-x: hidden;
   min-height: 100vh;
-  /* Removed overscroll-behavior-y: none to fix the "stuck" scroll issue */
 }
 
 .app {
@@ -666,8 +666,8 @@ body {
 /* --- GRADIENT BORDER MASK --- */
 .gradient-border-mask {
   position: absolute;
-  /* UPDATED: inset 0 instead of -1px prevents overflow clipping issues */
   inset: 0;
+  /* Updated for mobile fit */
   pointer-events: none;
   z-index: 2;
   background: linear-gradient(90deg, #ee0000, #ff8e71, #ff0f0f, #ee0000);
@@ -679,10 +679,8 @@ body {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   padding: 2px;
-  /* Slight reduce for cleaner lines */
   border-radius: 16px;
 
-  /* Initial state: circle is 0px */
   clip-path: circle(0px at var(--x, 50%) var(--y, 50%));
   transition: clip-path 0.5s ease-out;
 
@@ -956,7 +954,6 @@ body {
   /* Navbar */
   .navbar {
     background-color: transparent !important;
-    /* Invisible container */
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none;
     flex-direction: column;
@@ -967,10 +964,8 @@ body {
     gap: 15px;
     border-bottom: none !important;
     pointer-events: none;
-    /* Let clicks pass through empty parts of navbar */
   }
 
-  /* Make sure content inside navbar is still clickable */
   .nav-brand,
   .nav-links {
     pointer-events: auto;
@@ -981,11 +976,9 @@ body {
     font-size: 1.3rem;
     text-shadow: none;
     color: #000000;
-    /* Start black */
     transition: color 0.3s ease;
   }
 
-  /* Dark mode brand toggle */
   .navbar.dark-mode .nav-brand {
     color: white;
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
@@ -1006,13 +999,10 @@ body {
     display: none;
   }
 
-  /* Default (Top of Page) - Black text, light glass background */
   .nav-link-item {
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
     flex-shrink: 0;
-
-    /* Light/Milky Glass */
     background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -1022,14 +1012,13 @@ body {
     transition: all 0.3s ease;
   }
 
-  /* Dark Mode (Scrolled) - White text, dark frost background */
   .navbar.dark-mode .nav-link-item {
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
   }
 
-  /* Hero: Center and resize */
+  /* Hero */
   .hero-container {
     height: 70vh;
   }
