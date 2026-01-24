@@ -32,13 +32,13 @@ const NavLink = ({ href, children }) => {
 };
 
 const sponsorLogos = [
-  { node: <span style={{ fontFamily: 'sans-serif', fontWeight: 900, fontSize: '1.5rem', color: '#fff' }}>SOLIDWORKS</span>, title: "SolidWorks" },
-  { node: <span style={{ fontFamily: 'serif', fontWeight: 800, fontSize: '1.5rem', color: '#ccc' }}>TESLA</span>, title: "Tesla" },
-  { node: <span style={{ fontFamily: 'sans-serif', fontWeight: 700, fontStyle: 'italic', fontSize: '1.5rem', color: '#ff8e71' }}>ANSYS</span>, title: "Ansys" },
-  { node: <span style={{ fontFamily: 'monospace', fontWeight: 600, fontSize: '1.5rem', color: '#fff' }}>HONDARACING</span>, title: "Honda" },
-  { node: <span style={{ fontFamily: 'sans-serif', fontWeight: 800, fontSize: '1.5rem', color: '#888' }}>MAAS</span>, title: "Maas" },
-  { node: <span style={{ fontFamily: 'sans-serif', fontWeight: 900, fontSize: '1.5rem', color: '#fff', border: '2px solid white', padding: '0 5px' }}>FOX</span>, title: "Fox Shocks" },
-  { node: <span style={{ fontFamily: 'serif', fontWeight: 700, fontSize: '1.5rem', color: '#fff' }}>LINCOLN</span>, title: "Lincoln Electric" },
+  { node: <span style={{ fontFamily: 'sans-serif', fontWeight: 900, fontSize: '1.5rem', color: '#fff' }}>This</span>, title: "SolidWorks" },
+  { node: <span style={{ fontFamily: 'serif', fontWeight: 800, fontSize: '1.5rem', color: '#ccc' }}>Is Where</span>, title: "Tesla" },
+  { node: <span style={{ fontFamily: 'sans-serif', fontWeight: 700, fontStyle: 'italic', fontSize: '1.5rem', color: '#ff8e71' }}>We Would</span>, title: "Ansys" },
+  { node: <span style={{ fontFamily: 'monospace', fontWeight: 600, fontSize: '1.5rem', color: '#fff' }}>Put Our Sponsors</span>, title: "Honda" },
+  { node: <span style={{ fontFamily: 'sans-serif', fontWeight: 800, fontSize: '1.5rem', color: '#888' }}>If We</span>, title: "Maas" },
+  { node: <span style={{ fontFamily: 'sans-serif', fontWeight: 900, fontSize: '1.5rem', color: '#fff', border: '2px solid white', padding: '0 5px' }}>Had</span>, title: "Fox Shocks" },
+  { node: <span style={{ fontFamily: 'serif', fontWeight: 700, fontSize: '1.5rem', color: '#fff' }}>Any</span>, title: "Lincoln Electric" },
 ];
 
 const teamsData = [
@@ -46,7 +46,6 @@ const teamsData = [
     title: "Drivetrain",
     id: "drivetrain",
     icon: "⚙️",
-    // UPDATED: Now points to SVG files
     logo: "/logos/drivetrain.svg",
     description: "The heartbeat of the car. Our drivetrain team engineers the continuously variable transmission (CVT) and gearbox to efficiently transfer power from the engine to the wheels. We focus on tuning for maximum torque and acceleration while maintaining reliability under extreme off-road shock loads."
   },
@@ -85,6 +84,24 @@ const teamsData = [
     logo: "/logos/business.svg",
     description: "Fueling the operation. Our business team manages the $50k+ annual budget, secures corporate sponsorships, and handles logistics. We treat the racing team as a startup, focusing on marketing, project management, and delivering ROI to our partners."
   },
+];
+
+const legalData = [
+  {
+    id: "privacy",
+    title: "Privacy Policy",
+    content: "I don't collect anything trust me ;)"
+  },
+  {
+    id: "terms",
+    title: "Terms of Service",
+    content: "Basically we are not responsible for anything."
+  },
+  {
+    id: "cookie",
+    title: "Cookie Policy",
+    content: "Trust me bro I am NOT doing anything with your cookies."
+  }
 ];
 
 const TeamSection = () => {
@@ -227,14 +244,18 @@ const TeamSection = () => {
                     e.stopPropagation();
                     setSelectedId(null);
                   }}
-                  initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
+                  initial={{ opacity: 0, scale: 0.8, rotate: -45 }}
                   animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                  exit={{ opacity: 0, scale: 0.5, pointerEvents: "none" }}
+                  exit={{ opacity: 0, scale: 0.8, pointerEvents: "none" }}
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
-                  transition={{ delay: 0.1, duration: 0.2 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 20
+                  }}
                 >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                   </svg>
@@ -379,6 +400,18 @@ const SupportSection = () => {
 };
 
 const Footer = () => {
+  const [activeLegal, setActiveLegal] = useState(null);
+
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (activeLegal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [activeLegal]);
+
   return (
     <footer className="footer">
       <div className="footer-content">
@@ -402,16 +435,16 @@ const Footer = () => {
         <div className="footer-column">
           <h4>Legal</h4>
           <div className="footer-links">
-            <a href="#" className="footer-link">Privacy Policy</a>
-            <a href="#" className="footer-link">Terms of Service</a>
-            <a href="#" className="footer-link">Cookie Policy</a>
+            <button onClick={() => setActiveLegal('privacy')} className="footer-link-btn">Privacy Policy</button>
+            <button onClick={() => setActiveLegal('terms')} className="footer-link-btn">Terms of Service</button>
+            <button onClick={() => setActiveLegal('cookie')} className="footer-link-btn">Cookie Policy</button>
           </div>
         </div>
 
         <div className="footer-column">
           <h4>Contact</h4>
           <div className="footer-links">
-            <a href="mailto:racing@biola.edu" className="footer-link">racing@biola.edu</a>
+            <a href="mailto:racing@biola.edu" className="footer-link">biolaracingexample@biola.edu</a>
             <span className="footer-text">13800 Biola Ave<br />La Mirada, CA 90639</span>
           </div>
         </div>
@@ -432,18 +465,68 @@ const Footer = () => {
           </div>
         </div>
       </div>
+
+      <AnimatePresence>
+        {activeLegal && (
+          <>
+            <motion.div
+              className="overlay-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveLegal(null)}
+            />
+
+            {/* Added 'legal-modal' class for specific grey border styling */}
+            <motion.div
+              className="team-card expanded legal-modal"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              <motion.button
+                className="close-button"
+                onClick={() => setActiveLegal(null)}
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </motion.button>
+
+              {/* Removed Gradient Mask for Legal Cards */}
+
+              <div className="team-card-content expanded-content legal-content-layout">
+                {/* Removed Logo Placeholder for Legal Cards */}
+
+                <div className="text-container">
+                  <h3 className="team-name expanded-title">
+                    {legalData.find(l => l.id === activeLegal)?.title}
+                  </h3>
+                  <div className="team-description-wrapper">
+                    <p className="team-description legal-text">
+                      {legalData.find(l => l.id === activeLegal)?.content}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </footer>
   );
 };
 
 function App() {
   const [scrolledPast, setScrolledPast] = useState(false);
-  // FIX 2: Defer heavy rendering until after initial paint
   const [ready, setReady] = useState(false);
   const cursorRef = useRef(null);
 
   useEffect(() => {
-    // Double RAF ensures this runs after the first paint
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setReady(true);
@@ -459,7 +542,6 @@ function App() {
       }
     };
 
-    // FIX 5: Use passive listener for better scroll performance
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('mousemove', handleMouseMove);
     return () => {
@@ -470,10 +552,7 @@ function App() {
 
   return (
     <div className="app">
-      {/* FIX 2: Only render cursor when ready */}
       {ready && <div className="cursor-light" ref={cursorRef}></div>}
-
-      {/* ScrollLine completely removed per request */}
 
       <nav className={`navbar ${scrolledPast ? 'dark-mode' : ''}`}>
         <div className="nav-brand">Biola Racing</div>

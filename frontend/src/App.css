@@ -16,7 +16,11 @@
 html {
   background-color: var(--footer-bg);
   width: 100%;
+
+  /* CRITICAL: Disables the physical "bounce" effect sideways */
   overscroll-behavior-x: none;
+
+  /* Ensures immediate scroll response */
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
 }
@@ -28,7 +32,11 @@ body {
   width: 100%;
   min-height: 100vh;
   position: relative;
+
+  /* Hides overflow to prevent scrollbars, but allows sticky to work on desktop */
   overflow-x: hidden;
+
+  /* Inherit physics fixes */
   overscroll-behavior-x: none;
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
@@ -700,29 +708,45 @@ body {
   cursor: pointer;
 }
 
+/* UPDATED CLOSE BUTTON - Larger & Bolder */
 .close-button {
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
+  width: 60px;
+  /* Increased from 48px */
+  height: 60px;
+  /* Increased from 48px */
+
+  /* Remove circle styling */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+
+  /* Icon Color */
+  color: rgba(255, 255, 255, 0.6);
+
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 2000;
+
+  transition: color 0.3s ease;
 }
 
-.close-button:hover,
-.close-button:active {
-  background: #ee0000;
-  border-color: #ee0000;
-  transform: rotate(90deg) scale(1.1);
+.close-button:hover {
+  background: transparent;
+  color: #ee0000;
+}
+
+/* Ensure the SVG inside is sized correctly */
+.close-button svg {
+  width: 40px;
+  /* Increased from 32px */
+  height: 40px;
+  /* Increased from 32px */
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .team-card-content {
@@ -1141,21 +1165,8 @@ body {
   .close-button {
     top: 1rem;
     right: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  /* Support Section Mobile */
-  .support-section {
-    padding: 4rem 5%;
-  }
-
-  .support-title {
-    font-size: 2.2rem;
-  }
-
-  .support-text {
-    font-size: 1rem;
-    max-width: 100%;
+    background: transparent;
+    /* ensured transparent on mobile */
   }
 
   /* Footer Mobile */
@@ -1188,4 +1199,65 @@ body {
     gap: 1.5rem;
     text-align: center;
   }
+
+  /* Mobile adjustment for the legal modal */
+  .legal-content-layout {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .legal-content-layout .text-container {
+    align-items: center;
+  }
+}
+
+/* --- FOOTER LEGAL BUTTONS & MODAL --- */
+
+/* Reset button styles for Footer Legal Links */
+.footer-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.footer-link-btn:hover {
+  color: var(--biola-orange);
+  transform: translateX(5px);
+}
+
+/* Specific adjustments for Legal Modal content */
+.legal-modal {
+  z-index: 2100;
+}
+
+/* OVERRIDE THE DEFAULT TRANSPARENT BORDER WITH A GREY ONE FOR LEGAL MODALS */
+.team-card.expanded.legal-modal {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: #0a0a16;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.legal-text {
+  white-space: pre-wrap;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.legal-content-layout {
+  display: block;
+  width: 100%;
+  padding-top: 1rem;
+}
+
+.legal-content-layout .text-container {
+  max-width: 100%;
+  text-align: left;
 }
