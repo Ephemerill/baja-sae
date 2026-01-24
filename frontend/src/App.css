@@ -40,8 +40,7 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow-x: hidden;
-  /* Ensures no horizontal scroll on the app container */
+  /* REMOVED overflow-x: hidden here; relying on body overflow to allow sticky to work */
 }
 
 /* --- CURSOR --- */
@@ -254,6 +253,8 @@ body {
   position: sticky;
   top: 0;
   height: 100vh;
+  /* Use dvh (dynamic viewport height) for better iPad support */
+  height: 100dvh;
   width: 100%;
   overflow: hidden;
   display: flex;
