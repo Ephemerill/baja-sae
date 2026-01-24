@@ -941,8 +941,26 @@ body {
   transform: translateY(-2px);
 }
 
+/* --- INTERMEDIATE (TABLET) OPTIMIZATION --- */
+/* Fixes "trailing off" on iPad/Tablet screens */
+@media (max-width: 1250px) {
+  .teams-grid {
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 columns for tablets */
+  }
+
+  .teams-section {
+    padding: 4rem 5%;
+    /* Less side padding to give cards room */
+  }
+}
+
 /* --- MOBILE OPTIMIZATION --- */
 @media (max-width: 900px) {
+  .teams-grid {
+    grid-template-columns: 1fr;
+    /* 1 column for mobile */
+  }
 
   *,
   *::before,
@@ -1102,8 +1120,9 @@ body {
     padding: 3rem 5%;
   }
 
+  /* Note: grid-template-columns is handled in the 900px media query above */
+
   .teams-grid {
-    grid-template-columns: 1fr;
     gap: 1.5rem;
   }
 
