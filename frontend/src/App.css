@@ -15,19 +15,19 @@
 
 html {
   background-color: var(--footer-bg);
-  /* CRITICAL FIX: Removed overflow-x: hidden from html. 
-     This was causing the page to lock up on mobile load. */
-  height: 100%;
+  /* CRITICAL FIX: Removed height: 100% entirely. 
+     This allows the document to grow naturally and enables immediate scrolling on mobile. */
+  width: 100%;
 }
 
 body {
   background-color: var(--dark-bg);
   margin: 0;
   padding: 0;
-  /* Apply overflow handling here instead */
-  overflow-x: hidden;
+  /* Removed overflow-x: hidden from body to prevent conflict. 
+     We rely on .app to handle horizontal spill. */
   width: 100%;
-  min-height: 100%;
+  min-height: 100vh;
   position: relative;
 }
 
