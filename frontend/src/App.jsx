@@ -346,10 +346,7 @@ const EngineeringSection = () => {
             >
               <h2>Precision in every part.</h2>
               <p>
-                Our design philosophy revolves around the relentless pursuit of performance.
-                By utilizing advanced FEA analysis and iterative testing, we reduce weight
-                without compromising structural integrity. Every bolt, bracket, and suspension
-                link is optimized to withstand the brutal conditions of Baja SAE competition.
+                We dont actually build anything and this is all purely hypothetical. When we inevitably do end up building something it will be amazing and well engineered. Currenlty we are devoid of anything worth displaying so this lovely cover image is courtesy of Purdue Baja Racing.
               </p>
             </motion.div>
           </div>
@@ -387,7 +384,7 @@ const SupportSection = () => {
         </GradientText>
 
         <p className="support-text">
-          Building a championship-winning vehicle takes more than just engineering—it takes a community. Your support provides the materials, tools, and travel logistics needed to cross the finish line.
+          We really need money and we know you have money so basically you should give it to us becasue you cant take it with you.
         </p>
 
         <button className="donate-btn">
@@ -418,7 +415,7 @@ const Footer = () => {
         <div className="footer-brand">
           <h3>Biola Racing</h3>
           <p className="footer-text">
-            Pushing the limits of engineering and endurance. Designed and built by students at Biola University.
+            Pushing the limits of engineering and endurance. Designed and built by students at Biola University (allegedly).
           </p>
         </div>
 
