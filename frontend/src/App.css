@@ -15,16 +15,20 @@
 
 html {
   background-color: var(--footer-bg);
-  /* REMOVED overscroll-behavior: none; - This caused the scrolling bug */
-  overflow-x: hidden;
+  /* CRITICAL FIX: Removed overflow-x: hidden from html. 
+     This was causing the page to lock up on mobile load. */
+  height: 100%;
 }
 
 body {
   background-color: var(--dark-bg);
   margin: 0;
   padding: 0;
+  /* Apply overflow handling here instead */
   overflow-x: hidden;
-  min-height: 100vh;
+  width: 100%;
+  min-height: 100%;
+  position: relative;
 }
 
 .app {
@@ -34,6 +38,7 @@ body {
   flex-direction: column;
   position: relative;
   overflow-x: hidden;
+  /* Double safety for horizontal spill */
 }
 
 /* --- SCROLL LINE --- */
@@ -667,7 +672,6 @@ body {
 .gradient-border-mask {
   position: absolute;
   inset: 0;
-  /* Updated for mobile fit */
   pointer-events: none;
   z-index: 2;
   background: linear-gradient(90deg, #ee0000, #ff8e71, #ff0f0f, #ee0000);

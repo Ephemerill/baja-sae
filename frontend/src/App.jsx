@@ -199,8 +199,8 @@ const TeamSection = () => {
                 className="team-card expanded"
                 transition={{
                   type: "spring",
-                  stiffness: isMobile ? 250 : 80,
-                  damping: isMobile ? 25 : 20
+                  stiffness: isMobile ? 400 : 80,
+                  damping: isMobile ? 30 : 20
                 }}
                 exit={{ opacity: 0, scale: 0.95, pointerEvents: "none" }}
                 onClick={(e) => e.stopPropagation()}
