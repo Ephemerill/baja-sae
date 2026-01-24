@@ -16,11 +16,7 @@
 html {
   background-color: var(--footer-bg);
   width: 100%;
-
-  /* CRITICAL: Disables the physical "bounce" effect sideways */
   overscroll-behavior-x: none;
-
-  /* Ensures immediate scroll response */
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
 }
@@ -32,11 +28,7 @@ body {
   width: 100%;
   min-height: 100vh;
   position: relative;
-
-  /* Hides overflow to prevent scrollbars, but allows sticky to work on desktop */
   overflow-x: hidden;
-
-  /* Inherit physics fixes */
   overscroll-behavior-x: none;
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
@@ -48,6 +40,8 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow-x: hidden;
+  /* Ensures no horizontal scroll on the app container */
 }
 
 /* --- CURSOR --- */
@@ -360,11 +354,14 @@ body {
   position: relative;
   z-index: 2;
   width: 100%;
-  padding: 4rem 10%;
+  /* Reduced side padding from 10% to ensure cards have room on smaller screens */
+  padding: 4rem 5%;
   background-color: var(--dark-bg);
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: hidden;
+  /* Contains any rogue overflows */
 }
 
 .teams-header {
@@ -399,7 +396,8 @@ body {
 
 .teams-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* Use minmax(0, 1fr) to prevent grid blowout on smaller screens */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
   width: 100%;
   height: 100%;
@@ -941,17 +939,13 @@ body {
   transform: translateY(-2px);
 }
 
-/* --- INTERMEDIATE (TABLET) OPTIMIZATION --- */
-/* Fixes "trailing off" on iPad/Tablet screens */
-@media (max-width: 1250px) {
+/* --- INTERMEDIATE / TABLET OPTIMIZATION --- */
+/* Switches to 2 columns (3 rows) on screens smaller than 1200px to prevent trailing off */
+@media (max-width: 1200px) {
   .teams-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     /* 2 columns for tablets */
-  }
-
-  .teams-section {
-    padding: 4rem 5%;
-    /* Less side padding to give cards room */
+    gap: 1.5rem;
   }
 }
 

@@ -20,7 +20,7 @@ const NavLink = ({ href, children }) => {
           colors={["#ee0000ff", "#ff8e71ff", "#ff0f0f"]}
           animationSpeed={2}
           showBorder={false}
-          className="nav-gradient-text"
+          className="nav-gradient-text" s
         >
           {children}
         </GradientText>
@@ -47,42 +47,42 @@ const teamsData = [
     id: "drivetrain",
     icon: "⚙️",
     logo: "/logos/drivetrain.svg",
-    description: "The heartbeat of the car. Our drivetrain team engineers the continuously variable transmission (CVT) and gearbox to efficiently transfer power from the engine to the wheels. We focus on tuning for maximum torque and acceleration while maintaining reliability under extreme off-road shock loads."
+    description: "I thought we were making cars and not trains so idk what this is doing here i'm ngl"
   },
   {
     title: "Suspension",
     id: "suspension",
     icon: "amort",
     logo: "/logos/suspension.svg",
-    description: "Conquering the terrain. We design and validate custom double-wishbone front and trailing-arm rear suspension geometries. Using Adams Car simulation, we optimize camber curves and damping ratios to ensure our drivers can tackle 6-foot drops and rock gardens with confidence."
+    description: "Everyone knows the more suspension the better so basically we need all we can get."
   },
   {
     title: "Brakes",
     id: "brakes",
     icon: "🛑",
     logo: "/logos/brakes.svg",
-    description: "Stopping power is safety. This team is responsible for the complete hydraulic braking system, ensuring we can lock all four wheels at any speed. We meticulously design custom calipers, rotors, and pedal assemblies to minimize weight while maximizing thermal efficiency."
+    description: "Stopping seems important until you realize that brakes make you slower and obviously you cant win a race by going slow."
   },
   {
     title: "Frame",
     id: "frame",
     icon: "🏗️",
     logo: "/logos/frame.svg",
-    description: "The backbone of safety. Our chassis team designs a lightweight 4130 chromoly steel spaceframe that exceeds strict SAE safety standards. Through rigorous FEA impact analysis, we ensure the driver is protected from rollovers and collisions while keeping the center of gravity low."
+    description: "Holy framer motion mentioned. Generational react animation referenced. This is huge for web developers everywhere."
   },
   {
     title: "Interface",
     id: "interface",
     icon: "🖥️",
     logo: "/logos/interface.svg",
-    description: "Driver-machine connection. We focus on ergonomics and data acquisition. From steering wheel design to dashboard displays that relay real-time engine telemetry, we ensure the driver has total control and situational awareness during the endurance race."
+    description: "Driver-machine connection. We focus on ergonomics and data acquisition. From steering wheel design to dashboard displays that relay real-time engine telemetry, we ensure the driver has total control and situational awareness during the endurance race. Yeah you thought I was going to change this one didn't you?"
   },
   {
     title: "Business",
     id: "business",
     icon: "💼",
     logo: "/logos/business.svg",
-    description: "Fueling the operation. Our business team manages the $50k+ annual budget, secures corporate sponsorships, and handles logistics. We treat the racing team as a startup, focusing on marketing, project management, and delivering ROI to our partners."
+    description: "Whatever they do it cannot be as difficult as what we do. -Engineering Major"
   },
 ];
 
@@ -451,7 +451,7 @@ const Footer = () => {
       </div>
 
       <div className="footer-bottom">
-        <span className="copyright">© {new Date().getFullYear()} Biola Racing. All rights reserved.</span>
+        <span className="copyright">© {new Date().getFullYear()} Biola Racing. Some rights reserved.</span>
         <div className="social-icons">
           {/* Simple SVG Social Icons */}
           <div className="social-icon">
