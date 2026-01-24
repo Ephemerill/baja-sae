@@ -16,8 +16,12 @@
 html {
   background-color: var(--footer-bg);
   width: 100%;
+
+  /* CRITICAL: Disables the physical "bounce" effect sideways */
+  overscroll-behavior-x: none;
+
+  /* Ensures immediate scroll response */
   touch-action: pan-y;
-  overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -28,9 +32,13 @@ body {
   width: 100%;
   min-height: 100vh;
   position: relative;
+
+  /* Hides overflow to prevent scrollbars, but allows sticky to work */
   overflow-x: hidden;
+
+  /* Inherit physics fixes */
+  overscroll-behavior-x: none;
   touch-action: pan-y;
-  overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -607,10 +615,9 @@ body {
   display: block;
   object-fit: contain;
 
-  /* CRITICAL FIX: Prevents browser from thinking you're trying to drag-and-drop the image */
+  /* Prevents dragging logic from interfering */
   pointer-events: none;
   user-select: none;
-  -webkit-user-drag: none;
 }
 
 .logoloop__link {
@@ -922,6 +929,16 @@ body {
 /* --- MOBILE OPTIMIZATION --- */
 @media (max-width: 900px) {
 
+  /* * THE NUCLEAR FIX:
+   * Disable horizontal swiping on EVERY element by default.
+   * This forces the browser to treat all swipes as vertical scrolls.
+   */
+  *,
+  *::before,
+  *::after {
+    touch-action: pan-y !important;
+  }
+
   /* Navbar */
   .navbar {
     background-color: transparent !important;
@@ -953,13 +970,21 @@ body {
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
   }
 
+  /* UPDATED NAV LINKS: WRAP instead of SCROLL */
   .nav-links {
     width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
+    /* Removing overflow: auto and nowrap to kill swipe need */
+    /* overflow-x: auto; */
+    /* white-space: nowrap; */
+
+    display: flex;
+    flex-wrap: wrap;
+    /* Allows buttons to drop to next line if needed */
+    justify-content: center;
+    /* Centers them nicely */
+
     padding-bottom: 5px;
     gap: 10px;
-    justify-content: center;
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
