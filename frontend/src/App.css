@@ -15,20 +15,31 @@
 
 html {
   background-color: var(--footer-bg);
-  /* CRITICAL FIX: Removed height: 100% entirely. 
-     This allows the document to grow naturally and enables immediate scrolling on mobile. */
   width: 100%;
+  /* CRITICAL: Do NOT put overflow-x: hidden here. It breaks mobile scroll start. */
+
+  /* FIX: Force mobile scroll enablement */
+  touch-action: pan-y;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
   background-color: var(--dark-bg);
   margin: 0;
   padding: 0;
-  /* Removed overflow-x: hidden from body to prevent conflict. 
-     We rely on .app to handle horizontal spill. */
   width: 100%;
   min-height: 100vh;
   position: relative;
+
+  /* FIX: Apply overflow-x: hidden HERE, not on .app */
+  /* This prevents the sticky breaking on desktop while still hiding overflow. */
+  overflow-x: hidden;
+
+  /* Inherit mobile scroll fixes */
+  touch-action: pan-y;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .app {
@@ -37,59 +48,9 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow-x: hidden;
-  /* Double safety for horizontal spill */
-}
 
-/* --- SCROLL LINE --- */
-.scroll-line-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-  overflow: visible;
-}
-
-.scroll-line-svg {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  opacity: 0.8;
-}
-
-.anchor {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  z-index: -1;
-}
-
-.start-anchor {
-  top: 0;
-  left: 50%;
-}
-
-.hero-anchor {
-  top: 50%;
-  left: 10%;
-}
-
-.mid-anchor {
-  top: 140vh;
-  left: 85%;
-}
-
-.split-anchor {
-  top: 280vh;
-  left: 15%;
-}
-
-.end-anchor {
-  bottom: 0;
-  left: 50%;
+  /* CRITICAL FIX: Removed overflow-x: hidden from here. */
+  /* When this was here, it created a new scroll context that broke position: sticky. */
 }
 
 /* --- CURSOR --- */
@@ -102,6 +63,7 @@ body {
   pointer-events: none;
   z-index: 50;
   mix-blend-mode: screen;
+  will-change: background;
 }
 
 @media (hover: none) {
@@ -194,6 +156,7 @@ body {
   letter-spacing: 0.5px;
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   padding: 0.8rem 1.5rem;
   border-radius: 50px;
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -955,11 +918,15 @@ body {
 /* --- MOBILE OPTIMIZATION --- */
 @media (max-width: 900px) {
 
+  /* FIX 3: Disable backdrop-filter globally on mobile */
+  * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
   /* Navbar */
   .navbar {
     background-color: transparent !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
@@ -1008,8 +975,6 @@ body {
     font-size: 0.85rem;
     flex-shrink: 0;
     background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(0, 0, 0, 0.1);
     color: #000000;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -1056,8 +1021,9 @@ body {
     padding-bottom: 3rem;
   }
 
+  /* FIX 4: Disable sticky positioning on mobile to prevent rubber banding */
   .engineering-sticky-view {
-    position: relative !important;
+    position: static !important;
     height: auto !important;
     top: auto !important;
     padding: 2rem 5%;
@@ -1125,30 +1091,22 @@ body {
     height: 200px;
   }
 
-  /* Expanded Card Mobile Fix - Constrain width/height */
+  /* Expanded Card Mobile Fix */
   .team-card.expanded {
     position: fixed;
-    /* Center it with margins */
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%) !important;
-    /* Force center */
     width: 90vw;
     height: auto;
     max-height: 80vh;
-    /* Don't cover full height */
-
     border-radius: 20px;
-    /* Rounded corners for modal look */
     padding: 2rem 1.5rem;
-
-    /* Ensure content fits or scrolls */
     overflow-y: auto;
     z-index: 2000;
     margin: 0;
   }
 
-  /* Update mask to fit radius perfectly on mobile */
   .gradient-border-mask {
     border-radius: 20px;
   }

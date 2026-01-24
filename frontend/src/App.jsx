@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import ScrollFloat from './ScrollFloat';
 import GradientText from './GradientText';
-import ScrollLine from './ScrollLine';
 import LogoLoop from './LogoLoop';
 import './App.css';
 
@@ -412,7 +411,18 @@ const Footer = () => {
 
 function App() {
   const [scrolledPast, setScrolledPast] = useState(false);
+  // FIX 2: Defer heavy rendering until after initial paint
+  const [ready, setReady] = useState(false);
   const cursorRef = useRef(null);
+
+  useEffect(() => {
+    // Double RAF ensures this runs after the first paint
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setReady(true);
+      });
+    });
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolledPast(window.scrollY > window.innerHeight * 0.9);
@@ -421,7 +431,9 @@ function App() {
         cursorRef.current.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(42, 80, 229, 0.15), transparent 40%)`;
       }
     };
-    window.addEventListener('scroll', handleScroll);
+
+    // FIX 5: Use passive listener for better scroll performance
+    window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('mousemove', handleMouseMove);
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -431,15 +443,10 @@ function App() {
 
   return (
     <div className="app">
-      <div className="cursor-light" ref={cursorRef}></div>
-      <div className="scroll-line-container">
-        <ScrollLine />
-        <div className="anchor start-anchor" id="start-anchor"></div>
-        <div className="anchor hero-anchor" id="hero-anchor"></div>
-        <div className="anchor mid-anchor" id="mid-anchor"></div>
-        <div className="anchor split-anchor" id="split-anchor"></div>
-        <div className="anchor end-anchor" id="end-anchor"></div>
-      </div>
+      {/* FIX 2: Only render cursor when ready */}
+      {ready && <div className="cursor-light" ref={cursorRef}></div>}
+
+      {/* ScrollLine completely removed per request */}
 
       <nav className={`navbar ${scrolledPast ? 'dark-mode' : ''}`}>
         <div className="nav-brand">Biola Racing</div>
