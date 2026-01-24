@@ -16,9 +16,6 @@
 html {
   background-color: var(--footer-bg);
   width: 100%;
-  /* CRITICAL: Do NOT put overflow-x: hidden here. It breaks mobile scroll start. */
-
-  /* FIX: Force mobile scroll enablement */
   touch-action: pan-y;
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
@@ -31,12 +28,7 @@ body {
   width: 100%;
   min-height: 100vh;
   position: relative;
-
-  /* FIX: Apply overflow-x: hidden HERE, not on .app */
-  /* This prevents the sticky breaking on desktop while still hiding overflow. */
   overflow-x: hidden;
-
-  /* Inherit mobile scroll fixes */
   touch-action: pan-y;
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
@@ -48,9 +40,6 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
-
-  /* CRITICAL FIX: Removed overflow-x: hidden from here. */
-  /* When this was here, it created a new scroll context that broke position: sticky. */
 }
 
 /* --- CURSOR --- */
@@ -576,6 +565,13 @@ body {
   --logoloop-gap: 32px;
   --logoloop-logoHeight: 28px;
   --logoloop-fadeColorAuto: #ffffff;
+
+  /* CRITICAL FIX for "Dead Scroll" on Swipe */
+  /* Forces browser to interpret touches as vertical page pans, ignoring horizontal intent */
+  touch-action: pan-y;
+  /* Prevent accidentally selecting text while scrolling over logos */
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .logoloop__track {
@@ -585,6 +581,9 @@ body {
   user-select: none;
   position: relative;
   z-index: 0;
+
+  /* Ensure the track also defers to vertical page scrolling */
+  touch-action: pan-y;
 }
 
 .logoloop__list {
@@ -607,6 +606,11 @@ body {
   width: auto;
   display: block;
   object-fit: contain;
+
+  /* CRITICAL FIX: Prevents browser from thinking you're trying to drag-and-drop the image */
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .logoloop__link {
@@ -918,12 +922,6 @@ body {
 /* --- MOBILE OPTIMIZATION --- */
 @media (max-width: 900px) {
 
-  /* FIX 3: Disable backdrop-filter globally on mobile */
-  * {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-
   /* Navbar */
   .navbar {
     background-color: transparent !important;
@@ -974,7 +972,12 @@ body {
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
     flex-shrink: 0;
+
+    /* RESTORED: Glass effect specifically for buttons */
     background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
     border: 1px solid rgba(0, 0, 0, 0.1);
     color: #000000;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -1021,7 +1024,7 @@ body {
     padding-bottom: 3rem;
   }
 
-  /* FIX 4: Disable sticky positioning on mobile to prevent rubber banding */
+  /* Sticky fix for mobile */
   .engineering-sticky-view {
     position: static !important;
     height: auto !important;
