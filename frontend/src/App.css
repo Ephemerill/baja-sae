@@ -1275,3 +1275,244 @@ body {
   max-width: 100%;
   text-align: left;
 }
+
+/* --- TIMELINE SECTION --- */
+.timeline-section {
+  position: relative;
+  width: 100%;
+  padding: 6rem 5%;
+  background-color: var(--dark-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.timeline-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.timeline-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: white;
+  margin: 0;
+}
+
+.timeline-underline {
+  width: 60%;
+  height: 4px;
+  background: linear-gradient(90deg, #ee0000ff, #ff8e71ff);
+  margin: 0.5rem auto 0;
+  border-radius: 2px;
+}
+
+.timeline-container {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* The Line & Nodes Track */
+.timeline-track-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+
+/* The gray background line */
+.timeline-line-bg {
+  position: absolute;
+  top: 50%;
+  left: 2rem;
+  right: 2rem;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-50%);
+  z-index: 1;
+  border-radius: 4px;
+}
+
+/* The colored progress line */
+.timeline-line-fill {
+  position: absolute;
+  top: 50%;
+  left: 2rem;
+  height: 4px;
+  background: linear-gradient(90deg, #ee0000ff, #ff8e71ff);
+  transform: translateY(-50%);
+  z-index: 2;
+  border-radius: 4px;
+  /* width is handled inline via React state */
+  transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 0 15px rgba(238, 0, 0, 0.5);
+}
+
+.timeline-node-wrapper {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  width: 80px;
+  /* click target area */
+}
+
+.timeline-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--card-bg);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.timeline-node-wrapper:hover .timeline-dot {
+  transform: scale(1.3);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.timeline-node-wrapper.active .timeline-dot {
+  background-color: #ee0000;
+  border-color: #ff8e71;
+  transform: scale(1.5);
+  box-shadow: 0 0 20px rgba(238, 0, 0, 0.6);
+}
+
+.timeline-label {
+  position: absolute;
+  top: 35px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.3s ease, transform 0.3s ease;
+  white-space: nowrap;
+}
+
+.timeline-node-wrapper.active .timeline-label {
+  color: white;
+  transform: translateY(5px);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* The Reveal Content Box */
+.timeline-content-display {
+  width: 100%;
+  min-height: 400px;
+  background: rgba(10, 10, 22, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Add a subtle gradient glow behind content */
+.timeline-content-display::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -20%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(238, 0, 0, 0.08) 0%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+.timeline-image-wrapper {
+  flex: 1;
+  height: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.timeline-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.timeline-text-content {
+  flex: 1;
+  text-align: left;
+  z-index: 2;
+}
+
+.timeline-phase-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 1rem 0;
+  background: linear-gradient(90deg, #ee0000ff, #ff8e71ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+}
+
+.timeline-phase-desc {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Mobile Responsive */
+@media (max-width: 900px) {
+  .timeline-track-wrapper {
+    padding: 0;
+  }
+
+  .timeline-line-bg,
+  .timeline-line-fill {
+    left: 0;
+    right: 0;
+  }
+
+  .timeline-label {
+    font-size: 0.7rem;
+    top: 30px;
+  }
+
+  .timeline-content-display {
+    flex-direction: column-reverse;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    min-height: auto;
+  }
+
+  .timeline-image-wrapper {
+    width: 100%;
+    height: 200px;
+    flex: none;
+  }
+
+  .timeline-phase-title {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .timeline-text-content {
+    text-align: center;
+  }
+}

@@ -20,7 +20,7 @@ const NavLink = ({ href, children }) => {
           colors={["#ee0000ff", "#ff8e71ff", "#ff0f0f"]}
           animationSpeed={2}
           showBorder={false}
-          className="nav-gradient-text" s
+          className="nav-gradient-text"
         >
           {children}
         </GradientText>
@@ -84,6 +84,44 @@ const teamsData = [
     logo: "/logos/business.svg",
     description: "Whatever they do it cannot be as difficult as what we do. -Engineering Major"
   },
+];
+
+const timelineData = [
+  {
+    id: 1,
+    year: "Team Formation",
+    title: "Team Formation - Now",
+    description: "All Biola students are welcome to join and compete with us",
+    image: "/team.jpg"
+  },
+  {
+    id: 2,
+    year: "Preparation",
+    title: "Preparation - Fall 2026",
+    description: "The team continues to develop a competitive machine",
+    image: "/cad.jpg"
+  },
+  {
+    id: 3,
+    year: "Garage Completion",
+    title: "Garage Completion - Spring 2027",
+    description: "Construction of the Engineering Garage is completed in Spring 2027",
+    image: "/garage.jpg"
+  },
+  {
+    id: 4,
+    year: "Development & Testing",
+    title: "Development & Testing - Fall 2027",
+    description: "Biola Racing will begin the development of prototypes, split into subsystem teams.",
+    image: "/construction.jpg"
+  },
+  {
+    id: 5,
+    year: "SAE Competition",
+    title: "SAE Competition - May 2028",
+    description: "Once SAE inspections are passed, Biola Racing will compete in SAE courses",
+    image: "/race.jpg"
+  }
 ];
 
 const legalData = [
@@ -309,6 +347,102 @@ const TeamSection = () => {
   );
 };
 
+const TimelineSection = () => {
+  const [activeNode, setActiveNode] = useState(0);
+
+  // Calculate the ratio (0 to 1) instead of a raw percentage
+  const progressRatio = activeNode / (timelineData.length - 1);
+
+  return (
+    <section className="timeline-section">
+      <div className="timeline-header">
+        <h2 className="timeline-title">The Process</h2>
+        <div className="timeline-underline"></div>
+      </div>
+
+      <div className="timeline-container">
+        {/* Navigation Track */}
+        <div className="timeline-track-wrapper">
+          {/* Background Gray Line */}
+          <div className="timeline-line-bg"></div>
+
+          {/* Active Color Line 
+              Fixed Logic: We calculate width based on the available track space 
+              (100% - 4rem) to account for the 2rem spacing on left and right 
+          */}
+          <div
+            className="timeline-line-fill"
+            style={{ width: `calc((100% - 4rem) * ${progressRatio})` }}
+          ></div>
+
+          {/* Nodes */}
+          {timelineData.map((item, index) => (
+            <div
+              key={item.id}
+              className={`timeline-node-wrapper ${index <= activeNode ? 'active' : ''}`}
+              onClick={() => setActiveNode(index)}
+            >
+              <div className="timeline-dot"></div>
+              <span className="timeline-label">{item.year}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Content Display Area */}
+        <div className="timeline-content-wrapper">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeNode}
+              className="timeline-content-display"
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.98 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            >
+              <div className="timeline-image-wrapper">
+                <motion.img
+                  src={timelineData[activeNode].image}
+                  alt={timelineData[activeNode].title}
+                  className="timeline-image"
+                  initial={{ scale: 1.1 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                />
+                {/* Gradient overlay on image for style */}
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)',
+                  zIndex: 1
+                }}></div>
+              </div>
+
+              <div className="timeline-text-content">
+                <motion.h3
+                  className="timeline-phase-title"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  {timelineData[activeNode].title}
+                </motion.h3>
+                <motion.p
+                  className="timeline-phase-desc"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  {timelineData[activeNode].description}
+                </motion.p>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const EngineeringSection = () => {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -494,10 +628,7 @@ const Footer = () => {
                 </svg>
               </motion.button>
 
-              {/* Removed Gradient Mask for Legal Cards */}
-
               <div className="team-card-content expanded-content legal-content-layout">
-                {/* Removed Logo Placeholder for Legal Cards */}
 
                 <div className="text-container">
                   <h3 className="team-name expanded-title">
@@ -608,6 +739,8 @@ function App() {
       <EngineeringSection />
 
       <TeamSection />
+
+      <TimelineSection />
 
       <SupportSection />
 
