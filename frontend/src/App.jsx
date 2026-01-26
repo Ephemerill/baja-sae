@@ -374,7 +374,7 @@ const TimelineSection = () => {
           className="timeline-track-wrapper"
           style={{
             flexDirection: isMobile ? 'column' : 'row',
-            height: isMobile ? '400px' : '100px',
+            height: isMobile ? '500px' : '100px', // Increased to 500px for mobile breathing room
             alignItems: 'center',
             justifyContent: 'space-between',
             // On mobile we need more padding top/bottom for the vertical spread
@@ -422,9 +422,9 @@ const TimelineSection = () => {
               <span
                 className="timeline-label"
                 style={isMobile ? {
-                  // Mobile Label Styles: Position to right of dot
+                  // Mobile Label Styles: Position clearly to the RIGHT of the dot
                   position: 'absolute',
-                  left: '30px',
+                  left: '60px', // Center is 40px, dot radius is ~13px. 60px clears it.
                   top: '50%',
                   transform: 'translateY(-50%)',
                   textAlign: 'left',
