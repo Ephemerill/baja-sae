@@ -349,6 +349,14 @@ const TeamSection = () => {
 
 const TimelineSection = () => {
   const [activeNode, setActiveNode] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 900);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Calculate the ratio (0 to 1) instead of a raw percentage
   const progressRatio = activeNode / (timelineData.length - 1);
@@ -362,17 +370,41 @@ const TimelineSection = () => {
 
       <div className="timeline-container">
         {/* Navigation Track */}
-        <div className="timeline-track-wrapper">
+        <div
+          className="timeline-track-wrapper"
+          style={{
+            flexDirection: isMobile ? 'column' : 'row',
+            height: isMobile ? '400px' : '100px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            // On mobile we need more padding top/bottom for the vertical spread
+            padding: isMobile ? '2rem 0' : '0 2rem'
+          }}
+        >
           {/* Background Gray Line */}
-          <div className="timeline-line-bg"></div>
+          <div
+            className="timeline-line-bg"
+            style={{
+              width: isMobile ? '4px' : 'auto',
+              height: isMobile ? 'auto' : '4px',
+              left: isMobile ? '50%' : '2rem',
+              right: isMobile ? 'auto' : '2rem',
+              top: isMobile ? '2rem' : '50%',
+              bottom: isMobile ? '2rem' : 'auto',
+              transform: isMobile ? 'translateX(-50%)' : 'translateY(-50%)'
+            }}
+          ></div>
 
-          {/* Active Color Line 
-              Fixed Logic: We calculate width based on the available track space 
-              (100% - 4rem) to account for the 2rem spacing on left and right 
-          */}
+          {/* Active Color Line */}
           <div
             className="timeline-line-fill"
-            style={{ width: `calc((100% - 4rem) * ${progressRatio})` }}
+            style={{
+              width: isMobile ? '4px' : `calc((100% - 4rem) * ${progressRatio})`,
+              height: isMobile ? `calc((100% - 4rem) * ${progressRatio})` : '4px',
+              left: isMobile ? '50%' : '2rem',
+              top: isMobile ? '2rem' : '50%',
+              transform: isMobile ? 'translateX(-50%)' : 'translateY(-50%)'
+            }}
           ></div>
 
           {/* Nodes */}
@@ -381,9 +413,28 @@ const TimelineSection = () => {
               key={item.id}
               className={`timeline-node-wrapper ${index <= activeNode ? 'active' : ''}`}
               onClick={() => setActiveNode(index)}
+              style={{
+                // Ensure nodes are positioned correctly in the flex container
+                zIndex: 3
+              }}
             >
               <div className="timeline-dot"></div>
-              <span className="timeline-label">{item.year}</span>
+              <span
+                className="timeline-label"
+                style={isMobile ? {
+                  // Mobile Label Styles: Position to right of dot
+                  position: 'absolute',
+                  left: '30px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  textAlign: 'left',
+                  whiteSpace: 'nowrap'
+                } : {
+                  // Desktop Label Styles: Default
+                }}
+              >
+                {item.year}
+              </span>
             </div>
           ))}
         </div>
