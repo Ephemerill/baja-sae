@@ -647,7 +647,7 @@ const AboutSection = () => {
               <h2>Driven by Passion.</h2>
               <p>
                 Biola Racing is a student-run engineering team dedicated to designing, building,
-                and racing an off-road vehicle for the SAE Baja competition. We will combine technical
+                and racing an off-road vehicle for the SAE Baja competition. We combine technical
                 skills with endurance to push the limits of what is possible in a collegiate environment.
                 We bridge the gap between theory and reality, turning designs into dirt-tearing machines.
               </p>
@@ -870,6 +870,22 @@ function App() {
   // Track navigation state to optimize scroll performance
   const [isNavigating, setIsNavigating] = useState(false);
   const cursorRef = useRef(null);
+
+  // --- IMAGE PRELOADER ---
+  useEffect(() => {
+    const imagesToPreload = [
+      ...heroImages,
+      ...teamsData.map(team => team.logo).filter(l => l),
+      ...timelineData.map(item => item.image),
+      "/team-2.jpg",
+      "/part-cutting.png"
+    ];
+
+    imagesToPreload.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   useEffect(() => {
     requestAnimationFrame(() => {
