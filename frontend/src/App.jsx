@@ -358,6 +358,14 @@ const TimelineSection = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // --- NEW: Preload Images ---
+  useEffect(() => {
+    timelineData.forEach((item) => {
+      const img = new Image();
+      img.src = item.image;
+    });
+  }, []);
+
   // Calculate the ratio (0 to 1) instead of a raw percentage
   const progressRatio = activeNode / (timelineData.length - 1);
 
@@ -374,7 +382,7 @@ const TimelineSection = () => {
           className="timeline-track-wrapper"
           style={{
             flexDirection: isMobile ? 'column' : 'row',
-            height: isMobile ? '500px' : '100px', // Increased to 500px for mobile breathing room
+            height: isMobile ? '500px' : '100px',
             alignItems: 'center',
             justifyContent: 'space-between',
             // On mobile we need more padding top/bottom for the vertical spread
@@ -424,7 +432,7 @@ const TimelineSection = () => {
                 style={isMobile ? {
                   // Mobile Label Styles: Position clearly to the RIGHT of the dot
                   position: 'absolute',
-                  left: '60px', // Center is 40px, dot radius is ~13px. 60px clears it.
+                  left: '60px',
                   top: '50%',
                   transform: 'translateY(-50%)',
                   textAlign: 'left',
