@@ -1,16 +1,57 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import ScrollFloat from './ScrollFloat';
 import GradientText from './GradientText';
 import LogoLoop from './LogoLoop';
 import './App.css';
 
-const NavLink = ({ href, children }) => {
+// --- CONFIGURATION: Add your image paths here ---
+const heroImages = [
+  "/hero-1.png",
+  "/hero-2.png",
+  "/hero-3.png",
+  "/hero-4.png",
+  "/hero-5.png"
+];
+
+const NavLink = ({ href, children, setIsNavigating }) => {
   const [isHovered, setIsHovered] = useState(false);
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    const targetId = href.replace('#', '');
+    const element = document.getElementById(targetId);
+
+    if (element) {
+      // 1. Enter Navigation Mode (disables heavy interactions/animations)
+      setIsNavigating(true);
+
+      // 2. Calculate target position
+      let scrollTarget = element.offsetTop;
+
+      // Adjust for the "Track" sections (About/Car) so we land 
+      // in the middle where the text is fully visible.
+      if (targetId === 'about' || targetId === 'car') {
+        scrollTarget += element.offsetHeight * 0.55;
+      }
+
+      // 3. Smooth scroll
+      window.scrollTo({
+        top: scrollTarget,
+        behavior: 'smooth'
+      });
+
+      // 4. Exit Navigation Mode after scroll settles (approx 1000ms)
+      setTimeout(() => {
+        setIsNavigating(false);
+      }, 1000);
+    }
+  };
 
   return (
     <a
       href={href}
+      onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className="nav-link-item"
@@ -47,42 +88,42 @@ const teamsData = [
     id: "drivetrain",
     icon: "⚙️",
     logo: "/logos/drivetrain.svg",
-    description: "I thought we were making cars and not trains so idk what this is doing here i'm ngl"
+    description: "The Drivetrain team bridges the gap between raw power and forward motion. We will design and build a custom gearbox and tune the CVT to maximize efficiency and torque transfer. This system is vital to vehicle performance, ensuring the engine’s output is effectively delivered to the wheels to conquer steep climbs and rugged terrain."
   },
   {
     title: "Suspension",
     id: "suspension",
     icon: "amort",
     logo: "/logos/suspension.svg",
-    description: "Everyone knows the more suspension the better so basically we need all we can get."
+    description: "The suspension team will work to develop a suspension system that provides a cushion against the rough baja race conditions. It needs to be soft yet firm at the right times. A good suspension system is vital to vehicle performance, ensuring the vehicle's stability and control during the race."
   },
   {
     title: "Brakes",
     id: "brakes",
     icon: "🛑",
     logo: "/logos/brakes.svg",
-    description: "Stopping seems important until you realize that brakes make you slower and obviously you cant win a race by going slow."
+    description: "The brakes team will focus on making a braking system that provides a safe and effective way to slow down the vehicle. This system must be bulletproof so that both the driver and the spectators are protected."
   },
   {
     title: "Frame",
     id: "frame",
     icon: "🏗️",
     logo: "/logos/frame.svg",
-    description: "Holy framer motion mentioned. Generational react animation referenced. This is huge for web developers everywhere."
+    description: "The frame team will fabricate a frame that provides a stable and durable structure for the vehicle. It needs to be strong and durable so that the vehicle can withstand the rough conditions of the race."
   },
   {
     title: "Interface",
     id: "interface",
     icon: "🖥️",
     logo: "/logos/interface.svg",
-    description: "Driver-machine connection. We focus on ergonomics and data acquisition. From steering wheel design to dashboard displays that relay real-time engine telemetry, we ensure the driver has total control and situational awareness during the endurance race. Yeah you thought I was going to change this one didn't you?"
+    description: "The interface team will develop a user interface that provides a safe and effective way to control the vehicle. It needs to be reliable to ensure safe and prescice control of the vehicle during extreme conditions"
   },
   {
     title: "Business",
     id: "business",
     icon: "💼",
     logo: "/logos/business.svg",
-    description: "Whatever they do it cannot be as difficult as what we do. -Engineering Major"
+    description: "I dont know what this team does but its important so we need you on it."
   },
 ];
 
@@ -128,19 +169,89 @@ const legalData = [
   {
     id: "privacy",
     title: "Privacy Policy",
-    content: "I don't collect anything trust me ;)"
+    content: "I don't collect anything trust me ;) (seriously though)"
   },
   {
     id: "terms",
     title: "Terms of Service",
-    content: "Basically we are not responsible for anything."
+    content: "You can look at this website. There is not really anything to agree to."
   },
   {
     id: "cookie",
     title: "Cookie Policy",
-    content: "Trust me bro I am NOT doing anything with your cookies."
+    content: "I literally use no cookies yet so dont worry about it bro."
   }
 ];
+
+const HeroCarousel = () => {
+  // Initialize at 0 for deterministic hydration and instant first load
+  const [index, setIndex] = useState(0);
+
+  const nextImage = useCallback(() => {
+    setIndex((prev) => (prev + 1) % heroImages.length);
+  }, []);
+
+  const prevImage = useCallback(() => {
+    setIndex((prev) => (prev - 1 + heroImages.length) % heroImages.length);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      nextImage();
+    }, 10000);
+    return () => clearInterval(timer);
+  }, [index, nextImage]);
+
+  return (
+    <div className="hero-container" id="home">
+      {heroImages.map((img, i) => (
+        <motion.img
+          key={img}
+          src={img}
+          alt={`Biola Baja SAE ${i}`}
+          className="hero-image"
+          // If it's the first image (i===0), force initial opacity to 1.
+          // Otherwise start at 0. This ensures instant visibility on load.
+          initial={{ opacity: i === 0 ? 1 : 0 }}
+          animate={{ opacity: i === index ? 1 : 0 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }} // Faster fade (0.8s)
+          style={{
+            zIndex: i === index ? 2 : 1,
+            pointerEvents: 'none'
+          }}
+        />
+      ))}
+
+      <div className="hero-overlay"></div>
+
+      <div className="carousel-controls">
+        <motion.button
+          className="carousel-arrow left"
+          onClick={prevImage}
+          whileHover={{ scale: 1.2, x: -5 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </motion.button>
+
+        <motion.button
+          className="carousel-arrow right"
+          onClick={nextImage}
+          whileHover={{ scale: 1.2, x: 5 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </motion.button>
+      </div>
+
+      <h1 className="hero-text">Running The Race</h1>
+    </div>
+  );
+};
 
 const TeamSection = () => {
   const [selectedId, setSelectedId] = useState(null);
@@ -358,7 +469,6 @@ const TimelineSection = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // --- NEW: Preload Images ---
   useEffect(() => {
     timelineData.forEach((item) => {
       const img = new Image();
@@ -366,18 +476,16 @@ const TimelineSection = () => {
     });
   }, []);
 
-  // Calculate the ratio (0 to 1) instead of a raw percentage
   const progressRatio = activeNode / (timelineData.length - 1);
 
   return (
     <section className="timeline-section">
       <div className="timeline-header">
-        <h2 className="timeline-title">The Process</h2>
+        <h2 className="timeline-title">Our Timeline</h2>
         <div className="timeline-underline"></div>
       </div>
 
       <div className="timeline-container">
-        {/* Navigation Track */}
         <div
           className="timeline-track-wrapper"
           style={{
@@ -385,11 +493,9 @@ const TimelineSection = () => {
             height: isMobile ? '500px' : '100px',
             alignItems: 'center',
             justifyContent: 'space-between',
-            // On mobile we need more padding top/bottom for the vertical spread
             padding: isMobile ? '2rem 0' : '0 2rem'
           }}
         >
-          {/* Background Gray Line */}
           <div
             className="timeline-line-bg"
             style={{
@@ -403,7 +509,6 @@ const TimelineSection = () => {
             }}
           ></div>
 
-          {/* Active Color Line */}
           <div
             className="timeline-line-fill"
             style={{
@@ -415,31 +520,24 @@ const TimelineSection = () => {
             }}
           ></div>
 
-          {/* Nodes */}
           {timelineData.map((item, index) => (
             <div
               key={item.id}
               className={`timeline-node-wrapper ${index <= activeNode ? 'active' : ''}`}
               onClick={() => setActiveNode(index)}
-              style={{
-                // Ensure nodes are positioned correctly in the flex container
-                zIndex: 3
-              }}
+              style={{ zIndex: 3 }}
             >
               <div className="timeline-dot"></div>
               <span
                 className="timeline-label"
                 style={isMobile ? {
-                  // Mobile Label Styles: Position clearly to the RIGHT of the dot
                   position: 'absolute',
                   left: '60px',
                   top: '50%',
                   transform: 'translateY(-50%)',
                   textAlign: 'left',
                   whiteSpace: 'nowrap'
-                } : {
-                  // Desktop Label Styles: Default
-                }}
+                } : {}}
               >
                 {item.year}
               </span>
@@ -447,7 +545,6 @@ const TimelineSection = () => {
           ))}
         </div>
 
-        {/* Content Display Area */}
         <div className="timeline-content-wrapper">
           <AnimatePresence mode="wait">
             <motion.div
@@ -467,7 +564,6 @@ const TimelineSection = () => {
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.5 }}
                 />
-                {/* Gradient overlay on image for style */}
                 <div style={{
                   position: 'absolute',
                   inset: 0,
@@ -499,6 +595,68 @@ const TimelineSection = () => {
         </div>
       </div>
     </section>
+  );
+};
+
+// --- NEW COMPONENT: About Section ---
+const AboutSection = () => {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  const scale = useTransform(scrollYProgress, [0.1, 0.4], [1, 0.8]);
+  const bodyOpacity = useTransform(scrollYProgress, [0.4, 0.6], [0, 1]);
+  const bodyY = useTransform(scrollYProgress, [0.4, 0.6], [20, 0]);
+
+  return (
+    <div ref={containerRef} className="engineering-track" id="about">
+      <div className="engineering-sticky-view">
+        <div className="split-container">
+
+          {/* Left Side: Image (Reversed from Engineering) */}
+          <div className="split-left image-mode">
+            <div className="image-frame">
+              {/* Using hero-3 as a placeholder for the about section */}
+              <img src="/team-2.jpg" alt="Who We Are" className="split-image" />
+            </div>
+          </div>
+
+          {/* Right Side: Text (Reversed from Engineering) */}
+          <div className="split-right text-mode">
+            <div className="title-anchor-wrapper">
+              <motion.div
+                style={{ scale, transformOrigin: "center left" }}
+                className="engineering-title-inner"
+              >
+                <GradientText
+                  colors={["#ee0000ff", "#ff8e71ff", "#ff0f0f", "#40c9ff"]}
+                  animationSpeed={5}
+                  showBorder={false}
+                  className="engineering-gradient-header"
+                >
+                  Who We Are
+                </GradientText>
+              </motion.div>
+            </div>
+            <motion.div
+              className="engineering-body-text"
+              style={{ opacity: bodyOpacity, y: bodyY }}
+            >
+              <h2>Driven by Passion.</h2>
+              <p>
+                Biola Racing is a student-run engineering team dedicated to designing, building,
+                and racing an off-road vehicle for the SAE Baja competition. We will combine technical
+                skills with endurance to push the limits of what is possible in a collegiate environment.
+                We bridge the gap between theory and reality, turning designs into dirt-tearing machines.
+              </p>
+            </motion.div>
+          </div>
+
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -539,13 +697,13 @@ const EngineeringSection = () => {
             >
               <h2>Precision in every part.</h2>
               <p>
-                We dont actually build anything and this is all purely hypothetical. When we inevitably do end up building something it will be amazing and well engineered. Currenlty we are devoid of anything worth displaying so this lovely cover image is courtesy of Purdue Baja Racing.
+                Though Biola racing is a brand new team, we are determined to make a name for ourselves by creating a car that excels in every aspect of the competition. We have not fabrictated anything yet but we are on track to design and build a fully functioning racing machine by 2028.
               </p>
             </motion.div>
           </div>
           <div className="split-right">
             <div className="image-frame">
-              <img src="/baja-web.jpg" alt="Engineering Excellence" className="split-image" />
+              <img src="/part-cutting.png" alt="Engineering Excellence" className="split-image" />
             </div>
           </div>
         </div>
@@ -573,11 +731,11 @@ const SupportSection = () => {
           showBorder={false}
           className="support-title"
         >
-          FUEL OUR PASSION
+          FUEL OUR TEAM
         </GradientText>
 
         <p className="support-text">
-          We really need money and we know you have money so basically you should give it to us becasue you cant take it with you.
+          Biola racing is a brand new team and because of that we dont have sponsors yet. That means we need to depend on donations to fund our team. Any amount of money helps us get closer to our goal of winning the SAE Baja competition. Please consider donating :)
         </p>
 
         <button className="donate-btn">
@@ -592,7 +750,6 @@ const SupportSection = () => {
 const Footer = () => {
   const [activeLegal, setActiveLegal] = useState(null);
 
-  // Prevent background scrolling when modal is open
   useEffect(() => {
     if (activeLegal) {
       document.body.style.overflow = 'hidden';
@@ -608,7 +765,7 @@ const Footer = () => {
         <div className="footer-brand">
           <h3>Biola Racing</h3>
           <p className="footer-text">
-            Pushing the limits of engineering and endurance. Designed and built by students at Biola University (allegedly).
+            Pushing the limits of engineering and endurance. (Will Be) Designed and built by students at Biola University.
           </p>
         </div>
 
@@ -643,7 +800,6 @@ const Footer = () => {
       <div className="footer-bottom">
         <span className="copyright">© {new Date().getFullYear()} Biola Racing. Some rights reserved.</span>
         <div className="social-icons">
-          {/* Simple SVG Social Icons */}
           <div className="social-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
           </div>
@@ -667,7 +823,6 @@ const Footer = () => {
               onClick={() => setActiveLegal(null)}
             />
 
-            {/* Added 'legal-modal' class for specific grey border styling */}
             <motion.div
               className="team-card expanded legal-modal"
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -708,9 +863,12 @@ const Footer = () => {
   );
 };
 
+// UPDATED: App Component manages isNavigating state
 function App() {
   const [scrolledPast, setScrolledPast] = useState(false);
   const [ready, setReady] = useState(false);
+  // Track navigation state to optimize scroll performance
+  const [isNavigating, setIsNavigating] = useState(false);
   const cursorRef = useRef(null);
 
   useEffect(() => {
@@ -737,24 +895,31 @@ function App() {
     };
   }, []);
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   return (
-    <div className="app">
+    // Add class when navigating so CSS can optimize sticky behavior
+    <div className={`app ${isNavigating ? 'is-navigating' : ''}`}>
       {ready && <div className="cursor-light" ref={cursorRef}></div>}
 
       <nav className={`navbar ${scrolledPast ? 'dark-mode' : ''}`}>
-        <div className="nav-brand">Biola Racing</div>
+        <div className="nav-brand" onClick={scrollToTop}>Biola Racing</div>
         <div className="nav-links">
-          <NavLink href="#about">About</NavLink>
-          <NavLink href="#team">Team</NavLink>
-          <NavLink href="#car">Car</NavLink>
-          <NavLink href="#contact">Contact</NavLink>
+          {/* Pass setter to NavLinks */}
+          <NavLink href="#about" setIsNavigating={setIsNavigating}>About</NavLink>
+          <NavLink href="#team" setIsNavigating={setIsNavigating}>Team</NavLink>
+          <NavLink href="#car" setIsNavigating={setIsNavigating}>Car</NavLink>
+          <NavLink href="#contact" setIsNavigating={setIsNavigating}>Support</NavLink>
         </div>
       </nav>
 
-      <div className="hero-container" id="about">
-        <img src="/baja-web.jpg" alt="Biola Baja SAE" className="hero-image" />
-        <h1 className="hero-text">Biola Faith Buzzwords</h1>
-      </div>
+      {/* Hero Carousel */}
+      <HeroCarousel />
 
       <div className="scroll-section">
         <ScrollFloat
@@ -794,6 +959,9 @@ function App() {
           className="my-logo-loop"
         />
       </div>
+
+      {/* New About Section inserted here */}
+      <AboutSection />
 
       <EngineeringSection />
 

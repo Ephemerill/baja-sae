@@ -40,7 +40,23 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
-  /* REMOVED overflow-x: hidden here; relying on body overflow to allow sticky to work */
+}
+
+/* --- OPTIMIZED NAVIGATION --- */
+/* When navigation is active, disable pointer events to stop hover recalcs */
+.app.is-navigating {
+  pointer-events: none;
+}
+
+/* FORCE LOADED STATE:
+   During programmatic scroll, we force the text opacity to 1 and remove transforms.
+   This "skips" the heavy framer-motion calculations for the scroll blur,
+   but keeps the layout "sticky" so nothing flashes or jumps.
+*/
+.app.is-navigating .engineering-body-text {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: none !important;
 }
 
 /* --- CURSOR --- */
@@ -62,19 +78,35 @@ body {
   }
 }
 
-/* --- HERO --- */
+/* --- HERO CAROUSEL --- */
 .hero-container {
   position: relative;
   width: 100%;
   height: 90vh;
   z-index: 51;
+  overflow: hidden;
+  background: var(--dark-bg);
 }
 
 .hero-image {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+      rgba(5, 5, 16, 0.3),
+      transparent 50%,
+      rgba(5, 5, 16, 0.8));
+  z-index: 5;
+  pointer-events: none;
 }
 
 .hero-text {
@@ -91,7 +123,44 @@ body {
   text-align: right;
   line-height: 1.1;
   text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
-  z-index: 5;
+  z-index: 10;
+}
+
+/* Carousel Controls */
+.carousel-controls {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 15;
+  pointer-events: none;
+}
+
+.carousel-arrow {
+  pointer-events: auto;
+  width: 60px;
+  height: 60px;
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.3s ease, color 0.3s ease;
+  outline: none;
+  opacity: 0.4;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.carousel-arrow:hover {
+  opacity: 1;
+  color: #ee0000;
 }
 
 /* --- NAVBAR --- */
@@ -124,7 +193,7 @@ body {
   color: #000000;
   text-transform: uppercase;
   letter-spacing: 1px;
-  cursor: default;
+  cursor: pointer;
   transition: color 0.3s ease;
 }
 
@@ -240,20 +309,21 @@ body {
   font-family: sans-serif;
 }
 
-/* --- ENGINEERING SECTION --- */
+/* --- ENGINEERING & ABOUT SECTION --- */
 .engineering-track {
-  height: 250vh;
+  height: 180vh;
   width: 100%;
   position: relative;
   z-index: 2;
-  margin-top: -8vh;
+  /* Reduced overlap to increase distance between logos and "Who We Are" */
+  margin-top: -5vh;
+  /* Was -20vh */
 }
 
 .engineering-sticky-view {
   position: sticky;
   top: 0;
   height: 100vh;
-  /* Use dvh (dynamic viewport height) for better iPad support */
   height: 100dvh;
   width: 100%;
   overflow: hidden;
@@ -280,6 +350,18 @@ body {
   height: 100%;
   position: relative;
   padding-right: 2rem;
+}
+
+.split-left.image-mode {
+  align-items: center;
+  padding-right: 2rem;
+}
+
+.split-right.text-mode {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding-left: 2rem;
 }
 
 .title-anchor-wrapper {
@@ -355,14 +437,12 @@ body {
   position: relative;
   z-index: 2;
   width: 100%;
-  /* Reduced side padding from 10% to ensure cards have room on smaller screens */
   padding: 4rem 5%;
   background-color: var(--dark-bg);
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-  /* Contains any rogue overflows */
 }
 
 .teams-header {
@@ -397,7 +477,6 @@ body {
 
 .teams-grid {
   display: grid;
-  /* Use minmax(0, 1fr) to prevent grid blowout on smaller screens */
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
   width: 100%;
@@ -707,30 +786,22 @@ body {
   cursor: pointer;
 }
 
-/* UPDATED CLOSE BUTTON - Larger & Bolder */
+/* UPDATED CLOSE BUTTON */
 .close-button {
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
   width: 60px;
-  /* Increased from 48px */
   height: 60px;
-  /* Increased from 48px */
-
-  /* Remove circle styling */
   background: transparent;
   border: none;
   border-radius: 0;
-
-  /* Icon Color */
   color: rgba(255, 255, 255, 0.6);
-
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 2000;
-
   transition: color 0.3s ease;
 }
 
@@ -739,12 +810,9 @@ body {
   color: #ee0000;
 }
 
-/* Ensure the SVG inside is sized correctly */
 .close-button svg {
   width: 40px;
-  /* Increased from 32px */
   height: 40px;
-  /* Increased from 32px */
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
@@ -941,11 +1009,9 @@ body {
 }
 
 /* --- INTERMEDIATE / TABLET OPTIMIZATION --- */
-/* Switches to 2 columns (3 rows) on screens smaller than 1200px to prevent trailing off */
 @media (max-width: 1200px) {
   .teams-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    /* 2 columns for tablets */
     gap: 1.5rem;
   }
 }
@@ -954,7 +1020,6 @@ body {
 @media (max-width: 900px) {
   .teams-grid {
     grid-template-columns: 1fr;
-    /* 1 column for mobile */
   }
 
   *,
@@ -1037,6 +1102,18 @@ body {
     transform: translateY(-50%);
   }
 
+  /* Adjust Arrows for mobile */
+  .carousel-controls {
+    padding: 0 0.5rem;
+  }
+
+  .carousel-arrow {
+    width: 40px;
+    height: 40px;
+    opacity: 0.6;
+    /* Slightly more visible on mobile since there is no hover */
+  }
+
   .scroll-subtext {
     font-size: 2.5rem;
     flex-direction: column;
@@ -1094,6 +1171,17 @@ body {
     align-items: center;
   }
 
+  /* Mobile Modifiers */
+  .split-left.image-mode {
+    padding-right: 0;
+  }
+
+  .split-right.text-mode {
+    padding-left: 0;
+    align-items: center;
+    /* Center text on mobile */
+  }
+
   .title-anchor-wrapper {
     min-height: auto;
     margin-bottom: 1rem;
@@ -1114,8 +1202,6 @@ body {
   .teams-section {
     padding: 3rem 5%;
   }
-
-  /* Note: grid-template-columns is handled in the 900px media query above */
 
   .teams-grid {
     gap: 1.5rem;
@@ -1180,7 +1266,6 @@ body {
     top: 1rem;
     right: 1rem;
     background: transparent;
-    /* ensured transparent on mobile */
   }
 
   /* Footer Mobile */
@@ -1226,8 +1311,6 @@ body {
 }
 
 /* --- FOOTER LEGAL BUTTONS & MODAL --- */
-
-/* Reset button styles for Footer Legal Links */
 .footer-link-btn {
   background: none;
   border: none;
@@ -1246,12 +1329,10 @@ body {
   transform: translateX(5px);
 }
 
-/* Specific adjustments for Legal Modal content */
 .legal-modal {
   z-index: 2100;
 }
 
-/* OVERRIDE THE DEFAULT TRANSPARENT BORDER WITH A GREY ONE FOR LEGAL MODALS */
 .team-card.expanded.legal-modal {
   border: 2px solid rgba(255, 255, 255, 0.3);
   background: #0a0a16;
@@ -1319,7 +1400,6 @@ body {
   gap: 3rem;
 }
 
-/* The Line & Nodes Track */
 .timeline-track-wrapper {
   position: relative;
   width: 100%;
@@ -1330,7 +1410,6 @@ body {
   padding: 0 2rem;
 }
 
-/* The gray background line */
 .timeline-line-bg {
   position: absolute;
   top: 50%;
@@ -1343,7 +1422,6 @@ body {
   border-radius: 4px;
 }
 
-/* The colored progress line */
 .timeline-line-fill {
   position: absolute;
   top: 50%;
@@ -1353,7 +1431,6 @@ body {
   transform: translateY(-50%);
   z-index: 2;
   border-radius: 4px;
-  /* width is handled inline via React state */
   transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
   box-shadow: 0 0 15px rgba(238, 0, 0, 0.5);
 }
@@ -1366,7 +1443,6 @@ body {
   align-items: center;
   cursor: pointer;
   width: 80px;
-  /* click target area */
 }
 
 .timeline-dot {
@@ -1408,7 +1484,6 @@ body {
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-/* The Reveal Content Box */
 .timeline-content-display {
   width: 100%;
   min-height: 400px;
@@ -1425,7 +1500,6 @@ body {
   position: relative;
 }
 
-/* Add a subtle gradient glow behind content */
 .timeline-content-display::before {
   content: "";
   position: absolute;
