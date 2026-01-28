@@ -1339,6 +1339,20 @@ body {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
+/* DONATION MODAL */
+.donation-modal {
+  z-index: 2200 !important;
+  background: #0a0a16;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.donation-modal .text-container {
+  align-items: center;
+  text-align: center;
+  max-width: 100%;
+}
+
 .legal-text {
   white-space: pre-wrap;
   font-size: 1.05rem;

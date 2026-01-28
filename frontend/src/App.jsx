@@ -697,7 +697,7 @@ const EngineeringSection = () => {
             >
               <h2>Precision in every part.</h2>
               <p>
-                Though Biola racing is a brand new team, we are determined to make a name for ourselves by creating a car that excels in every aspect of the competition. We have not fabrictated anything yet but we are on track to design and build a fully functioning racing machine by 2028.
+                We focus on every minute detail. If a part is designed in-huse, it is up to extreme saftey and performance specifications..
               </p>
             </motion.div>
           </div>
@@ -713,6 +713,17 @@ const EngineeringSection = () => {
 };
 
 const SupportSection = () => {
+  const [isDonationOpen, setIsDonationOpen] = useState(false);
+
+  useEffect(() => {
+    if (isDonationOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isDonationOpen]);
+
   return (
     <section className="support-section" id="contact">
       <div className="support-bg-glass"></div>
@@ -738,11 +749,60 @@ const SupportSection = () => {
           Biola racing is a brand new team and because of that we dont have sponsors yet. That means we need to depend on donations to fund our team. Any amount of money helps us get closer to our goal of winning the SAE Baja competition. Please consider donating :)
         </p>
 
-        <button className="donate-btn">
+        <button className="donate-btn" onClick={() => setIsDonationOpen(true)}>
           <div className="donate-btn-shine"></div>
           Support the Team
         </button>
       </motion.div>
+
+      <AnimatePresence>
+        {isDonationOpen && (
+          <>
+            <motion.div
+              className="overlay-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsDonationOpen(false)}
+              style={{ zIndex: 2100 }}
+            />
+
+            <motion.div
+              className="team-card expanded donation-modal"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              style={{ position: 'fixed' }}
+            >
+              <motion.button
+                className="close-button"
+                onClick={() => setIsDonationOpen(false)}
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </motion.button>
+
+              <div className="gradient-border-mask expanded-mask"></div>
+
+              <div className="team-card-content expanded-content" style={{ flexDirection: 'column', justifyContent: 'center' }}>
+                <div className="text-container" style={{ textAlign: 'center', maxWidth: '100%', alignItems: 'center' }}>
+                  <h3 className="team-name expanded-title" style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                    Donations Coming Soon
+                  </h3>
+                  <p className="team-description" style={{ maxWidth: '600px', margin: '0 auto' }}>
+                    We dont actually have a donation link yet. We are wroking on it but in the meantime you can email todd.curtis@biola.edu if you are interested in making a contribution.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
@@ -773,8 +833,8 @@ const Footer = () => {
           <h4>Explore</h4>
           <div className="footer-links">
             <a href="#about" className="footer-link">About</a>
-            <a href="#team" className="footer-link">Team</a>
             <a href="#car" className="footer-link">Car</a>
+            <a href="#team" className="footer-link">Team</a>
             <a href="#contact" className="footer-link">Support</a>
           </div>
         </div>
@@ -791,14 +851,14 @@ const Footer = () => {
         <div className="footer-column">
           <h4>Contact</h4>
           <div className="footer-links">
-            <a href="mailto:racing@biola.edu" className="footer-link">biolaracingexample@biola.edu</a>
+            <a href="mailto:racing@biola.edu" className="footer-link">biolaracing@biola.edu</a>
             <span className="footer-text">13800 Biola Ave<br />La Mirada, CA 90639</span>
           </div>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <span className="copyright">© {new Date().getFullYear()} Biola Racing. Some rights reserved.</span>
+        <span className="copyright">© {new Date().getFullYear()} Biola Racing. All rights reserved.</span>
         <div className="social-icons">
           <div className="social-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
@@ -928,8 +988,8 @@ function App() {
         <div className="nav-links">
           {/* Pass setter to NavLinks */}
           <NavLink href="#about" setIsNavigating={setIsNavigating}>About</NavLink>
-          <NavLink href="#team" setIsNavigating={setIsNavigating}>Team</NavLink>
           <NavLink href="#car" setIsNavigating={setIsNavigating}>Car</NavLink>
+          <NavLink href="#team" setIsNavigating={setIsNavigating}>Team</NavLink>
           <NavLink href="#contact" setIsNavigating={setIsNavigating}>Support</NavLink>
         </div>
       </nav>
