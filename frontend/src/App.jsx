@@ -210,11 +210,19 @@ const HeroCarousel = () => {
           src={img}
           alt={`Biola Baja SAE ${i}`}
           className="hero-image"
-          // If it's the first image (i===0), force initial opacity to 1.
-          // Otherwise start at 0. This ensures instant visibility on load.
+          // --- LOADING OPTIMIZATION ---
+          // 1. Eagerly load the first image (i===0) so it appears instantly.
+          // 2. Lazily load the rest so they don't steal bandwidth from the first one.
+          loading={i === 0 ? "eager" : "lazy"}
+          // 3. Explicitly tell the browser this is High Priority (LCP)
+          fetchPriority={i === 0 ? "high" : "low"}
+          // 4. Sync decoding for the first image prevents "pop-in"
+          decoding={i === 0 ? "sync" : "async"}
+
+          // Animation props
           initial={{ opacity: i === 0 ? 1 : 0 }}
           animate={{ opacity: i === index ? 1 : 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }} // Faster fade (0.8s)
+          transition={{ duration: 0.8, ease: "easeInOut" }}
           style={{
             zIndex: i === index ? 2 : 1,
             pointerEvents: 'none'
@@ -697,7 +705,7 @@ const EngineeringSection = () => {
             >
               <h2>Precision in every part.</h2>
               <p>
-                We focus on every minute detail. If a part is designed in-house, it is up to extreme saftey and performance specifications.
+                We focus on every minute detail. If a part is designed in-huse, it is up to extreme saftey and performance specifications..
               </p>
             </motion.div>
           </div>
@@ -794,9 +802,12 @@ const SupportSection = () => {
                   <h3 className="team-name expanded-title" style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
                     Donations Coming Soon
                   </h3>
+
+                  {/* UPDATED TEXT WITH EMAIL LINK */}
                   <p className="team-description" style={{ maxWidth: '600px', margin: '0 auto' }}>
-                    We dont actually have a donation link yet. We are wroking on it but in the meantime you can email todd.curtis@biola.edu if you are interested in making a contribution.
+                    We dont actually have a donation link yet. We are working on it but in the meantime you can email <a href="mailto:todd.curtis@biola.edu" style={{ color: '#ff8e71', textDecoration: 'none', fontWeight: 'bold' }}>todd.curtis@biola.edu</a> if you are interested in making a contribution.
                   </p>
+
                 </div>
               </div>
             </motion.div>
@@ -858,15 +869,15 @@ const Footer = () => {
       </div>
 
       <div className="footer-bottom">
-        <span className="copyright">© {new Date().getFullYear()} Biola Racing. All rights reserved.</span>
+        <span className="copyright">© {new Date().getFullYear()} Biola Racing. Some rights reserved.</span>
         <div className="social-icons">
-          <div className="social-icon">
+          <div className="social-icon" href="">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
           </div>
-          <div className="social-icon">
+          <div className="social-icon" href="https://www.linkedin.com/company/biola-racing/">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
           </div>
-          <div className="social-icon">
+          <div className="social-icon" href="">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
           </div>
         </div>
@@ -931,28 +942,44 @@ function App() {
   const [isNavigating, setIsNavigating] = useState(false);
   const cursorRef = useRef(null);
 
-  // --- IMAGE PRELOADER ---
+  // --- SMART IMAGE PRELOADER ---
   useEffect(() => {
-    const imagesToPreload = [
-      ...heroImages,
-      ...teamsData.map(team => team.logo).filter(l => l),
-      ...timelineData.map(item => item.image),
-      "/team-2.jpg",
-      "/part-cutting.png"
-    ];
+    const preloadSecondaryImages = () => {
+      // These are images we can load AFTER the hero is done
+      const imagesToPreload = [
+        ...heroImages.slice(1), // All hero images except the first
+        ...teamsData.map(team => team.logo).filter(l => l),
+        ...timelineData.map(item => item.image),
+        "/team-2.jpg",
+        "/part-cutting.png"
+      ];
 
-    imagesToPreload.forEach(src => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, []);
-
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setReady(true);
+      imagesToPreload.forEach(src => {
+        const img = new Image();
+        img.src = src;
       });
-    });
+    };
+
+    // 1. Manually preload the FIRST hero image so we can track when it's done
+    const firstHero = new Image();
+    firstHero.src = heroImages[0];
+
+    // 2. When first hero is done (or if it fails), set ready AND start loading the rest
+    firstHero.onload = () => {
+      setReady(true);
+      preloadSecondaryImages();
+    };
+    firstHero.onerror = () => {
+      setReady(true); // Fail gracefully
+      preloadSecondaryImages();
+    };
+
+    // Check if it's already cached and loaded immediately
+    if (firstHero.complete) {
+      setReady(true);
+      preloadSecondaryImages();
+    }
+
   }, []);
 
   useEffect(() => {
