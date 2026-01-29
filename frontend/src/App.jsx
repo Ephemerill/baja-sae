@@ -705,7 +705,7 @@ const EngineeringSection = () => {
             >
               <h2>Precision in every part.</h2>
               <p>
-                We focus on every minute detail. If a part is designed in-huse, it is up to extreme saftey and performance specifications..
+                We focus on every minute detail. If a part is designed in-house, it is up to extreme saftey and performance specifications..
               </p>
             </motion.div>
           </div>
